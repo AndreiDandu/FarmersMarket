@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "106557124325",
+    "firebase_url": "https://farmersmarket-c08fc.firebaseio.com",
+    "project_id": "farmersmarket-c08fc",
+    "storage_bucket": "farmersmarket-c08fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106557124325:android:e4b932673db928fe",
+        "android_client_info": {
+          "package_name": "dandu.andrei.farmersmarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106557124325-f2p49f56f23cggerq21g2b9nu9kijr77.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dandu.andrei.farmersmarket",
+            "certificate_hash": "9ae62896f3c71080ea09935ef07bfc6e2c5e3c60"
+          }
+        },
+        {
+          "client_id": "106557124325-cbeh7n3nbvhcdv7ausrr2ev5030m7a3i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5nCa97yPzo2maRjGQOflT4kHLInvj50o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106557124325-cbeh7n3nbvhcdv7ausrr2ev5030m7a3i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
