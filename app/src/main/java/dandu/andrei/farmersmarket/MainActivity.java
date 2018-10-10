@@ -1,6 +1,8 @@
 package dandu.andrei.farmersmarket;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -12,10 +14,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private FirebaseAuth auth;
+    private FirebaseFirestore fireStoreDB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,14 +45,44 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        //trebuie un formulat de inregistrare gen locatie strada/ ce trebuie pentru google maps ca sa poate sa localizeze
+        //asta doar in cazul in care vrei sa pui de vanzare
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //get authUser from FirebaseAuth.getInstance().getCurrentUser() then display it on NavigationDrawer daca nu merge asa trebuie trimis prin pref sau onActivity result si cu Intent data???;
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        String email = currentUser.getEmail();
+        fireStoreDB = FirebaseFirestore.getInstance();
+
+        //addUser();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        setUserInNavDrawer(navigationView,email);
         navigationView.setNavigationItemSelectedListener(this);
+
+    }
+//    public void addUser() {
+//        BuyerUser user = new BuyerUser("test testerson", "test@gmail.com");
+//        fireStoreDB.collection("BuyerUser").document("LoginUser").set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                Toast.makeText(MainActivity.this, "BuyerUser save with succes in DB", Toast.LENGTH_SHORT).show();
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Toast.makeText(MainActivity.this, "Fail to save user in DB", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
+    private void setUserInNavDrawer(NavigationView navigationView, String email){
+        View headerView = navigationView.getHeaderView(0);
+        TextView viewById = (TextView) headerView.findViewById(R.id.textView);
+        viewById.setText(email);
     }
 
     @Override
@@ -67,7 +110,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.sign_out) {
+            AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    startActivity(new Intent(MainActivity.this,LoginStartScreen.class));
+                    finish();
+                }
+            });
             return true;
         }
 
@@ -97,5 +147,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

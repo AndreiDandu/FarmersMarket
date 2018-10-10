@@ -8,6 +8,8 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -20,12 +22,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -39,8 +36,32 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".loginWithGoogle.SignedIn"
+            android:label="@string/SignIn"/>
+
+        <activity
+            android:name=".loginWithGoogle.AccountActivity"
+            android:label="@string/title_activity_account"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps2">
+        </activity>
+        <activity
+            android:name=".Fragments.LoginWithPasswordAndEmail"
+            android:label="Login">
+        </activity>
+        <activity
+            android:name=".LoginStartScreen"
+            android:label="@string/Login"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".HandleLogin.CheckEmailInDataBase" />
+        <activity android:name=".HandleLogin.SignInWithEmailUserNameAndPassword" />
     </application>
 
 </manifest>
