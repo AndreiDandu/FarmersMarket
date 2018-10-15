@@ -20,39 +20,56 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dandu.andrei.farmersmarket.MainActivity;
 import dandu.andrei.farmersmarket.R;
-import dandu.andrei.farmersmarket.Util;
 
 public class SignInWithEmailUserNameAndPassword extends Activity {
 
-    private EditText inputEmail, inputPassword;
-    private TextInputLayout inputLayoutEmail, inputLayoutPassword;
-    private Button btnSignUp;
+    @BindView(R.id.input_email) protected EditText inputEmail;
+    @BindView(R.id.input_password) protected EditText inputPassword;
+    @BindView(R.id.input_layout_email) protected TextInputLayout inputLayoutEmail;
+    @BindView(R.id.input_layout_password) protected TextInputLayout inputLayoutPassword;
+    @BindView(R.id.input_layout_full_name) protected TextInputLayout inputLayoutName;
+    @BindView(R.id.input_full_name) protected EditText inputName;
+    @BindView(R.id.btn_signup) protected Button btnSignUp;
     private FirebaseAuth firebaseAuth;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.email_and_password_ui);
+        //sters
         Toast.makeText(this,"SignInWithEmailUSerNameAndPassword",Toast.LENGTH_LONG).show();
-        inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_email);
-        inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_password);
-        inputEmail = (EditText) findViewById(R.id.input_email);
-        inputPassword = (EditText) findViewById(R.id.input_password);
-        btnSignUp = (Button) findViewById(R.id.btn_signup);
-        firebaseAuth = FirebaseAuth.getInstance();
+        ButterKnife.bind(this);
         inputEmail.addTextChangedListener(new MyTextWatcher(inputEmail));
         inputPassword.addTextChangedListener(new SignInWithEmailUserNameAndPassword.MyTextWatcher(inputPassword));
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createUser();
-            }
-        });
     }
+
+//    public void addUser() {
+//        String email = inputEmail.getText().toString();
+//        String password = inputPassword.getText().toString();
+//        String fullName = inputName.getText().toString();
+//
+//        User user = new User(email, fullName, password);
+//        firebaseFirestore.collection("User").document("NormalUser").set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                Toast.makeText(SignInWithEmailUserNameAndPassword.this, "User save with succes in DB", Toast.LENGTH_SHORT).show();
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Toast.makeText(SignInWithEmailUserNameAndPassword.this, "Fail to save user in DB", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
     //null https://material.io/design/components/text-fields.html#usage
-    private void createUser() {
+    @OnClick(R.id.btn_signup)
+    protected void createUser() {
         if (submitForm()) {
             String email = inputEmail.getText().toString();
             String password = inputPassword.getText().toString();
@@ -79,7 +96,6 @@ public class SignInWithEmailUserNameAndPassword extends Activity {
         }
         return false;
     }
-
 
     private boolean validateEmail() {
         String email = inputEmail.getText().toString().trim();
