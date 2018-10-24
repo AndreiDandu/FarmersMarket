@@ -24,21 +24,25 @@
                 android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:background="@color/colorPrimary"
-            android:text="@string/next_button"
-            android:textColor="@android:color/white" />
-
 
 
     </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginBottom="141dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/next_button"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/sign_in_button_email_checker"
