@@ -20,7 +20,6 @@ import com.google.firebase.auth.SignInMethodQueryResult;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dandu.andrei.farmersmarket.Fragments.LoginWithPasswordAndEmail;
 import dandu.andrei.farmersmarket.R;
 
 public class CheckEmailInDataBase extends Activity {
@@ -38,11 +37,12 @@ public class CheckEmailInDataBase extends Activity {
         firebaseAuth = FirebaseAuth.getInstance();
         Toast.makeText(this,"CheckEmailInDataBase",Toast.LENGTH_LONG).show();
         ButterKnife.bind(this);
+        email_field.addTextChangedListener(new MyTextWatcher(email_field,email_layout));
     }
 //mutat butonul mai jos
     @OnClick(R.id.next_button)
     public void onClickNextButton() {
-        if (validateEmail()) {
+        if (true) {
             final String email = email_field.getText().toString();
             firebaseAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(this, new OnCompleteListener<SignInMethodQueryResult>() {
                 @Override
@@ -73,28 +73,5 @@ public class CheckEmailInDataBase extends Activity {
         startActivity(new Intent(CheckEmailInDataBase.this,SignInWithEmailUserNameAndPassword.class));
     }
 
-    private boolean validateEmail() {
-        String email = email_field.getText().toString().trim();
-
-        if (email.isEmpty() || !isValidEmail(email)) {
-            email_layout.setError(getString(R.string.err_msg_email));
-            requestFocus(email_field);
-            return false;
-        } else {
-            email_layout.setErrorEnabled(false);
-        }
-
-        return true;
-    }
-
-    private void requestFocus(View view) {
-        if (view.requestFocus()) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
-    }
-
-    private static boolean isValidEmail(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
 }
 
