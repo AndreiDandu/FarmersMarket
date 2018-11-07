@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.text.TextUtils;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -39,10 +36,10 @@ public class CheckEmailInDataBase extends Activity {
         ButterKnife.bind(this);
         email_field.addTextChangedListener(new MyTextWatcher(email_field,email_layout));
     }
-//mutat butonul mai jos
+
     @OnClick(R.id.next_button)
     public void onClickNextButton() {
-        if (true) {
+
             final String email = email_field.getText().toString();
             firebaseAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(this, new OnCompleteListener<SignInMethodQueryResult>() {
                 @Override
@@ -65,7 +62,6 @@ public class CheckEmailInDataBase extends Activity {
 
                 }
             });
-        }
     }
 
     @OnClick(R.id.sign_in_button_email_checker)

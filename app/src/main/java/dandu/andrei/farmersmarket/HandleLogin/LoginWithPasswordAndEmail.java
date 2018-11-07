@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dandu.andrei.farmersmarket.MainActivity;
+import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
 
 

@@ -46,7 +46,7 @@ public class MyTextWatcher implements TextWatcher {
         String email = inputEditText.getText().toString().trim();
 
         if (email.isEmpty() || !isValidEmail(email)) {
-            inputLayout.setError("Enter valid email");
+            inputLayout.setError("A valid mail is required");
           //  requestFocus(inputEmail);
             return false;
         } else {
@@ -63,7 +63,7 @@ public class MyTextWatcher implements TextWatcher {
             return false;
         }
         if(inputEditText.getText().toString().length() < 6){
-            inputLayout.setError("Password too short min 6 chr");
+            inputLayout.setError("Password too short min 6 characters");
         } else {
             inputLayout.setErrorEnabled(false);
         }

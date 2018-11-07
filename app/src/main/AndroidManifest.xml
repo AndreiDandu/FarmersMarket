@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".Main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             </activity>
@@ -40,19 +40,15 @@
             android:label="@string/SignIn"/>
 
         <activity
-            android:name=".loginWithGoogle.AccountActivity"
-            android:label="@string/title_activity_account"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MapsActivity"
+            android:name=".Main.MapsActivity"
             android:label="@string/title_activity_maps2">
         </activity>
         <activity
-            android:name=".Fragments.LoginWithPasswordAndEmail"
+            android:name=".HandleLogin.LoginWithPasswordAndEmail"
             android:label="Login">
         </activity>
         <activity
-            android:name=".LoginStartScreen"
+            android:name=".Main.LoginStartScreen"
             android:label="@string/Login"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -62,6 +58,9 @@
         </activity>
         <activity android:name=".HandleLogin.CheckEmailInDataBase" />
         <activity android:name=".HandleLogin.SignInWithEmailUserNameAndPassword" />
+        <activity android:name=".Main.UploadPicture" />
+        <activity android:name=".ListViee.MainListActivity" />
+
     </application>
 
 </manifest>

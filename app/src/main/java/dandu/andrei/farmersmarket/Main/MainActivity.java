@@ -1,10 +1,9 @@
-package dandu.andrei.farmersmarket;
+package dandu.andrei.farmersmarket.Main;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -23,12 +23,23 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import dandu.andrei.farmersmarket.ListViee.Ad;
+import dandu.andrei.farmersmarket.ListViee.CustomListAdapter;
+import dandu.andrei.farmersmarket.ListViee.MainListActivity;
+import dandu.andrei.farmersmarket.R;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseAuth auth;
     private FirebaseFirestore fireStoreDB;
+    private List<Ad> movieList = new ArrayList<Ad>();
+    private ListView listView;
+    private CustomListAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +51,9 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(new Intent(MainActivity.this,MainListActivity.class));
             }
         });
-
         //trebuie un formulat de inregistrare gen locatie strada/ ce trebuie pentru google maps ca sa poate sa localizeze
         //asta doar in cazul in care vrei sa pui de vanzare
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -59,13 +68,30 @@ public class MainActivity extends AppCompatActivity
         String email = currentUser.getEmail();
         fireStoreDB = FirebaseFirestore.getInstance();
 
+        listView = (ListView) findViewById(R.id.list);
+        adapter = new CustomListAdapter(this, movieList);
+        listView.setAdapter(adapter);
+        //the object from MainList getEtras from intent
+
+        getAd();
         //addUser();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         setUserInNavDrawer(navigationView,email);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
-//    public void addUser() {
+
+
+    private void getAd() {
+        Intent i = getIntent();
+        Ad ad = (Ad) i.getSerializableExtra("Ad");
+        if (ad != null) {
+            movieList.add(ad);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    //    public void addUser() {
 //        BuyerUser user = new BuyerUser("test testerson", "test@gmail.com");
 //        fireStoreDB.collection("BuyerUser").document("LoginUser").set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
 //            @Override
@@ -104,11 +130,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.sign_out) {
             AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {

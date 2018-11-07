@@ -1,23 +1,31 @@
-package dandu.andrei.farmersmarket;
+package dandu.andrei.farmersmarket.Main;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dandu.andrei.farmersmarket.HandleLogin.CheckEmailInDataBase;
+import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.loginWithGoogle.SignedIn;
 
 public class LoginStartScreen extends Activity {
-
+   FirebaseAuth firebaseAuth;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_start_screen);
         ButterKnife.bind(LoginStartScreen.this);
+        firebaseAuth = FirebaseAuth.getInstance();
     }
     @OnClick(R.id.sign_in_with_email_btn)
     public void onClickEmailButton(){
@@ -32,4 +40,21 @@ public class LoginStartScreen extends Activity {
     public void onClickFacebookButton(){
         Toast.makeText(this, "Not working momentarily!", Toast.LENGTH_SHORT).show();
     }
+
+    @OnClick(R.id.skip_btn_id)
+    public void onClickSkipButton() {
+        firebaseAuth.signInWithEmailAndPassword("testSkipUser@gmail.com", "icecube01").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(LoginStartScreen.this, "Login succesful", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(LoginStartScreen.this,MainActivity.class));
+                } else {
+                    Toast.makeText(LoginStartScreen.this, "Fail", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+    }
+
 }
