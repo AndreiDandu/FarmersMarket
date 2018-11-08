@@ -1,6 +1,9 @@
 package dandu.andrei.farmersmarket.ListViee;
 
-public class Ad {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Ad implements Parcelable {
     private String description;
     private int price;
     private int quantity;
@@ -34,4 +37,36 @@ public class Ad {
         this.quantity = quantity;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    public Ad(Parcel in ){
+        readFromParceable(in);
+    }
+
+    private void readFromParceable(Parcel in) {
+        description = in.readString();
+        quantity = in.readInt();
+        price =in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(description);
+        dest.writeInt(quantity);
+        dest.writeInt(price);
+    }
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
+
+        @Override
+        public Ad createFromParcel(Parcel in) {
+            return new Ad(in);
+        }
+
+        @Override
+        public Ad[] newArray(int size) {
+            return new Ad[size];
+        }
+    };
 }
