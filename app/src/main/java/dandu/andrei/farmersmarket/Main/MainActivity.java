@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,26 +27,34 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import dandu.andrei.farmersmarket.ListViee.Ad;
+import dandu.andrei.farmersmarket.ListViee.AdActivity;
 import dandu.andrei.farmersmarket.ListViee.CustomListAdapter;
-import dandu.andrei.farmersmarket.ListViee.MainListActivity;
 import dandu.andrei.farmersmarket.R;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
     public static final String TAG = MainActivity.class.getSimpleName();
     private FirebaseAuth auth;
     private FirebaseFirestore fireStoreDB;
-    private List<Ad> movieList = new ArrayList<Ad>();
+    private ArrayList<Ad> adList = new ArrayList<Ad>();
     private ListView listView;
     private CustomListAdapter adapter;
     @Override
@@ -58,11 +68,10 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,MainListActivity.class));
+                startActivity(new Intent(MainActivity.this,AdActivity.class));
             }
         });
-        //trebuie un formulat de inregistrare gen locatie strada/ ce trebuie pentru google maps ca sa poate sa localizeze
-        //asta doar in cazul in care vrei sa pui de vanzare
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -73,65 +82,75 @@ public class MainActivity extends AppCompatActivity
         FirebaseUser currentUser = auth.getCurrentUser();
         String email = currentUser.getEmail();
         fireStoreDB = FirebaseFirestore.getInstance();
-
-        listView = (ListView) findViewById(R.id.list);
-        adapter = new CustomListAdapter(this, movieList);
-        listView.setAdapter(adapter);
-        //the object from MainList getEtras from intent
-
+        getAllAds();
         getAd();
-        //addUser();
+        listView = (ListView) findViewById(R.id.list);
+        adapter = new CustomListAdapter(adList,getApplicationContext());
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Ad dataModel= adList.get(position);
+                //get another class with same layout as adActivity and set fields.
+                Snackbar.make(view, "Click working", Snackbar.LENGTH_LONG)
+                        .setAction("No action", null).show();
+            }
+        });
+
+
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         setUserInNavDrawer(navigationView,email);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
-
-
     private Ad getAd() {
         Intent i = getIntent();
         Ad ad = (Ad) i.getExtras().getParcelable("Ad");
-        if (ad != null) {
-            movieList.add(ad);
-            adapter.notifyDataSetChanged();
 
+        if (ad != null) {
+            //adList.add(ad); always add form database
+            addAd(ad);
         }
         return ad;
     }
-//mutate in alta clasa
-        public void addAd(Ad ad) {
-            String uid = auth.getCurrentUser().getUid();
-            fireStoreDB.collection("Ads").document(uid).set(ad).addOnSuccessListener(new OnSuccessListener<Void>() {
+    //mutate in alta clasa
+        public void addAd(final Ad ad) {
+            final String uid = auth.getCurrentUser().getUid();
+            ad.setUid(uid);
+            fireStoreDB.collection("Ads").add(ad).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    Toast.makeText(MainActivity.this, "AD save with succes in DB", Toast.LENGTH_SHORT).show();
+
+                adList.add(ad);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MainActivity.this, "Fail to save Ad in DB", Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
+    public void getAllAds() {
+        String uid = auth.getCurrentUser().getUid();
+        CollectionReference ads = fireStoreDB.collection("Ads");
+        ads.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
             @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(MainActivity.this, "AD save with succes in DB", Toast.LENGTH_SHORT).show();
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                    Ad ad = documentSnapshot.toObject(Ad.class);
+                    adList.add(ad);
+                }
+                adapter.notifyDataSetChanged();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Fail to save Ad in DB", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void getAllAds(){
-        String uid = auth.getCurrentUser().getUid();
-        DocumentReference docRef = fireStoreDB.collection("Ads").document(uid);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        Map<String, Object> data = document.getData();
-                    }else{
-                        Toast.makeText(MainActivity.this,"No such doc",Toast.LENGTH_LONG).show();
-                    }
-
-                }
-                else{
-                    Log.d(TAG,"Fail",task.getException());
-                }
+                Toast.makeText(MainActivity.this,"Fail to read ads from DB",Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -183,7 +202,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            startActivity(new Intent(MainActivity.this,UploadPicture.class));
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {

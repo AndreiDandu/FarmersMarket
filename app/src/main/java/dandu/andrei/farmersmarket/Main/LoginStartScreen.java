@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,12 +20,15 @@ import dandu.andrei.farmersmarket.HandleLogin.CheckEmailInDataBase;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.loginWithGoogle.SignedIn;
 
-public class LoginStartScreen extends Activity {
+public class LoginStartScreen extends AppCompatActivity {
    FirebaseAuth firebaseAuth;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_start_screen);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
         ButterKnife.bind(LoginStartScreen.this);
         firebaseAuth = FirebaseAuth.getInstance();
     }

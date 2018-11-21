@@ -25,7 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import dandu.andrei.farmersmarket.MainActivity;
+import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
 
 public class SignedIn extends AppCompatActivity {

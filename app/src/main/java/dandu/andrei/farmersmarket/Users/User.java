@@ -5,24 +5,29 @@ public class User {
     private String fullName;
     private String password;
     private String location;
-    private String address;
+    private String street;
     private int zipCode;
+    private String userID;
+    private int phoneNumber;
 
-    public User(String email, String fullName, String password) {
-        this.email = email;
+    public User(String userID, String fullName) {
+        this.userID = userID;
         this.fullName = fullName;
-        this.password = password;
     }
 
 
 
-    public User(String email, String fullName, String password, String location, String address, int zipCode) {
-        this.email = email;
+    public User( String fullName,String email, String password,int zipCode,int phoneNumber, String street, String location) {
+
         this.fullName = fullName;
+        this.email = email;
         this.password = password;
-        this.location = location;
-        this.address = address;
         this.zipCode = zipCode;
+        this.phoneNumber = phoneNumber;
+        this.street = street;
+        this.location = location;
+
+
     }
 
 
@@ -59,12 +64,12 @@ public class User {
         this.location = location;
     }
 
-    public String getAddress() {
-        return address;
+    public String getStreet() {
+        return street;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public int getZipCode() {

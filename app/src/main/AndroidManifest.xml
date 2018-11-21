@@ -40,7 +40,7 @@
             android:label="@string/SignIn"/>
 
         <activity
-            android:name=".Main.MapsActivity"
+            android:name=".loginWithGoogle.MapsActivity"
             android:label="@string/title_activity_maps2">
         </activity>
         <activity
@@ -59,7 +59,7 @@
         <activity android:name=".HandleLogin.CheckEmailInDataBase" />
         <activity android:name=".HandleLogin.SignInWithEmailUserNameAndPassword" />
         <activity android:name=".Main.UploadPicture" />
-        <activity android:name=".ListViee.MainListActivity" />
+        <activity android:name=".ListViee.AdActivity" />
 
     </application>
 

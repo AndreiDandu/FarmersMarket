@@ -47,7 +47,7 @@ public class MyTextWatcher implements TextWatcher {
 
         if (email.isEmpty() || !isValidEmail(email)) {
             inputLayout.setError("A valid mail is required");
-          //  requestFocus(inputEmail);
+
             return false;
         } else {
             inputLayout.setErrorEnabled(false);
@@ -59,7 +59,6 @@ public class MyTextWatcher implements TextWatcher {
     private boolean validatePassword() {
         if (inputEditText.getText().toString().trim().isEmpty()) {
             inputLayout.setError("Enter valid password");
-          //  requestFocus(inputPassword);
             return false;
         }
         if(inputEditText.getText().toString().length() < 6){
@@ -70,11 +69,7 @@ public class MyTextWatcher implements TextWatcher {
 
         return true;
     }
-//    private void requestFocus(View view) {
-//        if (view.requestFocus()) {
-//            .getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-//        }
-//    }
+
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }

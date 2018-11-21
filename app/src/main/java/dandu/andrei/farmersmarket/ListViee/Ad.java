@@ -4,14 +4,36 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Ad implements Parcelable {
+
+
+    private String uid;
+    private String title;
     private String description;
     private int price;
     private int quantity;
+    private String uriPhoto;
     public Ad(){}
-    public Ad(String description, int price, int quantity) {
+
+    public Ad(String title, String description, int price, int quantity) {
+        this.title = title;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    public String getUriPhoto() {
+        return uriPhoto;
+    }
+
+    public void setUriPhoto(String uriPhoto) {
+        this.uriPhoto = uriPhoto;
+    }
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
     public String getDescription() {
         return description;
@@ -37,6 +59,13 @@ public class Ad implements Parcelable {
         this.quantity = quantity;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -46,6 +75,9 @@ public class Ad implements Parcelable {
     }
 
     private void readFromParceable(Parcel in) {
+        uriPhoto = in.readString();
+        uid = in.readString();
+        title = in.readString();
         description = in.readString();
         quantity = in.readInt();
         price =in.readInt();
@@ -53,6 +85,9 @@ public class Ad implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(uriPhoto);
+        dest.writeString(uid);
+        dest.writeString(title);
         dest.writeString(description);
         dest.writeInt(quantity);
         dest.writeInt(price);

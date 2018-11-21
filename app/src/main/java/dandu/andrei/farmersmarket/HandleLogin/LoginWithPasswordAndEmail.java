@@ -66,7 +66,7 @@ public class LoginWithPasswordAndEmail extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(LoginWithPasswordAndEmail.this, "login with succes", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginWithPasswordAndEmail.this, "Login with succes", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginWithPasswordAndEmail.this,MainActivity.class));
                 }else{
                     //set error label no conection with snackbar and wrong password

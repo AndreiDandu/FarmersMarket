@@ -1,36 +1,48 @@
 package dandu.andrei.farmersmarket.ListViee;
 
-
-import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import dandu.andrei.farmersmarket.R;
 
 
-public class CustomListAdapter extends BaseAdapter {
-    private Activity activity;
+public class CustomListAdapter extends ArrayAdapter<Ad> {
+    private Context context;
     private LayoutInflater inflater;
     private List<Ad> adItems;
+    private ImageView view;
 
-    public CustomListAdapter(Activity activity, List<Ad> adItems) {
-        this.activity = activity;
+    public CustomListAdapter( ArrayList<Ad> adItems ,Context context) {
+        super(context,R.layout.list_row,adItems);
+        this.context = context;
         this.adItems = adItems;
     }
+    private static class ViewHolder{
+       TextView txtTitle;
+       TextView txtDescription;
+       TextView txtInputLocation;
+       TextView txtPrice;
+       ImageView imageView;
 
+    }
     @Override
     public int getCount() {
         return adItems.size();
     }
 
     @Override
-    public Object getItem(int location) {
+    public Ad getItem(int location) {
         return adItems.get(location);
     }
 
@@ -41,34 +53,35 @@ public class CustomListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Ad ad = adItems.get(position);
+        ViewHolder viewHolder ;
+        if (inflater == null) {
+            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.list_row, parent,false);
 
-        if (inflater == null)
-            inflater = (LayoutInflater) activity
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null)
-            convertView = inflater.inflate(R.layout.list_row, null);
+            viewHolder.txtTitle = convertView.findViewById(R.id.title);
+            viewHolder.txtDescription = convertView.findViewById(R.id.description_id);
+            viewHolder.txtInputLocation = convertView.findViewById(R.id.input_location_list);
+            viewHolder.txtPrice = convertView.findViewById(R.id.price_id);
+            viewHolder.imageView = convertView.findViewById(R.id.thumbnail);
+            convertView.setTag(viewHolder);
 
-        TextView title = (TextView) convertView.findViewById(R.id.title);
-        TextView rating = (TextView) convertView.findViewById(R.id.rating);
-        TextView genre = (TextView) convertView.findViewById(R.id.genre);
-        TextView year = (TextView) convertView.findViewById(R.id.releaseYear);
+        }else{
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        String uriPhoto = ad.getUriPhoto();
+        if(uriPhoto != null){
+            Uri parse = Uri.parse(uriPhoto);
+            Glide.with(getContext()).load(parse).into(viewHolder.imageView);
+        }
 
-        // getting movie data for the row
-        Ad m = adItems.get(position);
-
-        // thumbnail image
-
-        // title
-        title.setText(m.getDescription());
-
-        // rating
-        rating.setText("Rating: " + String.valueOf(m.getPrice()));
-
-
-        genre.setText(m.getDescription());
-
-        // release year
-        year.setText(String.valueOf(m.getPrice()));
+        viewHolder.txtTitle.setText(ad.getTitle());
+        viewHolder.txtDescription.setText(ad.getDescription());
+        viewHolder.txtInputLocation.setText(String.valueOf(ad.getQuantity()));
+        viewHolder.txtPrice.setText(String.valueOf(ad.getPrice()));
 
         return convertView;
     }

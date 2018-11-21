@@ -1,4 +1,4 @@
-package dandu.andrei.farmersmarket.Main;
+package dandu.andrei.farmersmarket.loginWithGoogle;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;

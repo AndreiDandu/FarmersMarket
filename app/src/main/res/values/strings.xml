@@ -6,6 +6,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="sign_out">Sign out</string>
+    <string name="account_settings">Account settings</string>
     <string name="title_activity_maps">Map</string>
     <string name="SignIn">Sign in</string>
     <string name="SignUp">Sign up?</string>

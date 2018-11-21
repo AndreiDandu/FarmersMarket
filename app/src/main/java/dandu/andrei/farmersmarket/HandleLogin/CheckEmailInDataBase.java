@@ -52,7 +52,6 @@ public class CheckEmailInDataBase extends Activity {
                             intentExtra.putExtra("email", email);
                             startActivity(intentExtra);
                         } else {
-                            //hmmmmm nush cat ii de ok asa......
                             email_layout.setError("Email not found");
                             Toast.makeText(CheckEmailInDataBase.this, "Mail not found --Try again---", Toast.LENGTH_SHORT).show();
                         }
