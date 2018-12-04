@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,18 +27,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import dandu.andrei.farmersmarket.ListViee.Ad;
 import dandu.andrei.farmersmarket.ListViee.AdActivity;
@@ -97,6 +88,17 @@ public class MainActivity extends AppCompatActivity
         listView =  findViewById(R.id.list);
         adapter = new CustomListAdapter(adList,getApplicationContext());
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Object listItem = listView.getItemAtPosition(i);
+                Ad ad = (Ad) listItem;
+                Toast.makeText(getBaseContext(),"o",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
     private Ad getAd() {
         Intent i = getIntent();
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         return ad;
     }
     //mutate in alta clasa
-        public void addAd(final Ad ad) {
+    public void addAd(final Ad ad) {
             final String uid = auth.getCurrentUser().getUid();
             ad.setUid(uid);
             fireStoreDB.collection("Ads").add(ad).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
