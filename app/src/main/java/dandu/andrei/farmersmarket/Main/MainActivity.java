@@ -82,32 +82,25 @@ public class MainActivity extends AppCompatActivity
         FirebaseUser currentUser = auth.getCurrentUser();
         String email = currentUser.getEmail();
         fireStoreDB = FirebaseFirestore.getInstance();
-        getAllAds();
-        getAd();
-        listView = (ListView) findViewById(R.id.list);
-        adapter = new CustomListAdapter(adList,getApplicationContext());
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Ad dataModel= adList.get(position);
-                //get another class with same layout as adActivity and set fields.
-                Snackbar.make(view, "Click working", Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
-            }
-        });
 
 
+        setListItems();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         setUserInNavDrawer(navigationView,email);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
+    public void setListItems(){
+        getAllAds();
+        getAd();
+        listView =  findViewById(R.id.list);
+        adapter = new CustomListAdapter(adList,getApplicationContext());
+        listView.setAdapter(adapter);
+    }
     private Ad getAd() {
         Intent i = getIntent();
-        Ad ad = (Ad) i.getExtras().getParcelable("Ad");
+        Ad ad = i.getExtras().getParcelable("Ad");
 
         if (ad != null) {
             //adList.add(ad); always add form database
@@ -135,7 +128,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getAllAds() {
-        String uid = auth.getCurrentUser().getUid();
         CollectionReference ads = fireStoreDB.collection("Ads");
         ads.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 
