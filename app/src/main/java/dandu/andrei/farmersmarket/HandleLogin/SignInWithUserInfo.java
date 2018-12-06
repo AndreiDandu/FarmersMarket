@@ -25,7 +25,7 @@ import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Users.User;
 
-public class SignInWithEmailUserNameAndPassword extends Activity {
+public class SignInWithUserInfo extends Activity {
 
     @BindView(R.id.input_email) protected EditText inputEmail;
     @BindView(R.id.input_layout_email) protected TextInputLayout inputLayoutEmail;
@@ -49,7 +49,8 @@ public class SignInWithEmailUserNameAndPassword extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.email_and_password_ui);
+        setContentView(R.layout.user_info_layout);
+
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         Toast.makeText(this,"SignInWithEmailUSerNameAndPassword",Toast.LENGTH_LONG).show();
@@ -58,35 +59,38 @@ public class SignInWithEmailUserNameAndPassword extends Activity {
         inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword,inputLayoutPassword));
         //check again for email
     }
-
-    public void addUser() {
+    public User getUser(){
+        int zipcode= Integer.parseInt(inputZipcode.getText().toString());
+        int phoneNumber = Integer.parseInt(inputPhoneNumber.getText().toString());
         String email = inputEmail.getText().toString();
         String password = inputPassword.getText().toString();
         String fullName = inputName.getText().toString();
-        int zipcode= Integer.parseInt(inputZipcode.getText().toString());
-        int phoneNumber = Integer.parseInt(inputPhoneNumber.getText().toString());
         String streetName = inputStreetName.getText().toString();
         String location = inputLocation.getText().toString();
 
-        String uid = firebaseAuth.getCurrentUser().getUid();
         User user = new User(fullName,email,password,zipcode,phoneNumber,streetName,location);
+
+        return user;
+    }
+    public void addUser() {
+        User user = getUser();
+        String uid = firebaseAuth.getCurrentUser().getUid();
 
         firebaseFirestore.collection("UsersInfo").document(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(SignInWithEmailUserNameAndPassword.this, "User save with succes in DB", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInWithUserInfo.this, "User save with succes in DB", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SignInWithEmailUserNameAndPassword.this, "Fail to save user in DB", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInWithUserInfo.this, "Fail to save user in DB", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @OnClick(R.id.btn_signup)
     protected void createUser() {
-
             String email = inputEmail.getText().toString();
             String password = inputPassword.getText().toString();
 
@@ -95,13 +99,13 @@ public class SignInWithEmailUserNameAndPassword extends Activity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
                     if (task.isSuccessful()) {
-                        Toast.makeText(SignInWithEmailUserNameAndPassword.this, "User created with succes", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignInWithUserInfo.this, "User created with succes", Toast.LENGTH_LONG).show();
                         //make intent for MainActivity and send user and email
                         addUser();
-                        startActivity(new Intent(SignInWithEmailUserNameAndPassword.this,MainActivity.class));
+                        startActivity(new Intent(SignInWithUserInfo.this,MainActivity.class));
 
                     } else {
-                        Toast.makeText(SignInWithEmailUserNameAndPassword.this, "User creation failed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignInWithUserInfo.this, "User creation failed", Toast.LENGTH_LONG).show();
                     }
                 }
             });

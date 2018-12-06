@@ -12,19 +12,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,7 +74,6 @@ public class AdViewActivity extends Activity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    List<String> list = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Ad adFromFireStore = document.toObject(Ad.class);
                         if (adFromFireStore.getTitle().equals(ad.getTitle())) {
@@ -90,6 +83,7 @@ public class AdViewActivity extends Activity {
                             docRef.update("price", Integer.parseInt(price.getText().toString()));
                             docRef.update("quantity", Integer.parseInt(quantity.getText().toString()));
                             docRef.update("title", title.getText().toString());
+
                             Toast.makeText(AdViewActivity.this,"Ad updated",Toast.LENGTH_LONG).show();
                             startActivity(new Intent(AdViewActivity.this,MainActivity.class));
                         }
