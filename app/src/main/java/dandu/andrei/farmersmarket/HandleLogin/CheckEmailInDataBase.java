@@ -65,7 +65,7 @@ public class CheckEmailInDataBase extends Activity {
 
     @OnClick(R.id.sign_in_button_email_checker)
     public void onClickCreateUser() {
-        startActivity(new Intent(CheckEmailInDataBase.this,SignInWithEmailUserNameAndPassword.class));
+        startActivity(new Intent(CheckEmailInDataBase.this,SignInWithUserInfo.class));
     }
 
 }

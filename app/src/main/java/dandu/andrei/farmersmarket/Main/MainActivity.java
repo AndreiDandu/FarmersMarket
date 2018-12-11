@@ -94,6 +94,11 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Object listItem = listView.getItemAtPosition(i);
                 Ad ad = (Ad) listItem;
+
+                Intent intent = new Intent(MainActivity.this,AdViewActivity.class);
+                intent.putExtra("Ad",ad);
+                startActivity(intent);
+
                 Toast.makeText(getBaseContext(),"o",Toast.LENGTH_SHORT).show();
             }
         });
@@ -184,6 +189,9 @@ public class MainActivity extends AppCompatActivity
                 }
             });
             return true;
+        }
+        if(id == R.id.account_settings){
+            startActivity(new Intent(MainActivity.this,AccountInfo.class));
         }
 
         return super.onOptionsItemSelected(item);
