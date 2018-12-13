@@ -29,11 +29,21 @@ public class TextValidator implements TextWatcher {
     public void afterTextChanged(Editable s) {
         validateText();
     }
-    public void validateText(){
-        if(!inputEditText.getText().toString().equals("")){
 
+
+    public boolean validateText() {
+        if (inputEditText.getText().toString().trim().isEmpty()) {
+            inputLayout.setError("Enter valid text");
+            return false;
+        }
+        if (inputEditText.getText().toString().length() < 6) {
+            inputLayout.setError("");
+        } else {
+            inputLayout.setErrorEnabled(false);
         }
 
-
+        return true;
     }
+
+
 }

@@ -11,11 +11,12 @@ public class EmailValidator implements TextWatcher {
     protected TextInputLayout inputLayout;
 
 
-    public EmailValidator(EditText inputEditText,TextInputLayout inputLayout) {
+    public EmailValidator(EditText inputEditText, TextInputLayout inputLayout) {
         this.inputEditText = inputEditText;
         this.inputLayout = inputLayout;
 
     }
+
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -28,8 +29,9 @@ public class EmailValidator implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-
+        validateEmail();
     }
+
     private boolean validateEmail() {
         String email = inputEditText.getText().toString().trim();
 
@@ -43,6 +45,7 @@ public class EmailValidator implements TextWatcher {
 
         return true;
     }
+
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
