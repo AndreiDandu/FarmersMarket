@@ -33,9 +33,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-import dandu.andrei.farmersmarket.ListViee.Ad;
-import dandu.andrei.farmersmarket.ListViee.AdActivity;
-import dandu.andrei.farmersmarket.ListViee.CustomListAdapter;
+import dandu.andrei.farmersmarket.Ad.Ad;
+import dandu.andrei.farmersmarket.Ad.AdActivity;
+import dandu.andrei.farmersmarket.Ad.CustomListAdapter;
 import dandu.andrei.farmersmarket.R;
 
 

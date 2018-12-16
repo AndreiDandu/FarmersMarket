@@ -24,6 +24,8 @@ import butterknife.OnClick;
 import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Users.User;
+import dandu.andrei.farmersmarket.Validators.EmailValidator;
+import dandu.andrei.farmersmarket.Validators.PasswordValidator;
 
 public class SignInWithUserInfo extends Activity {
 
@@ -55,8 +57,8 @@ public class SignInWithUserInfo extends Activity {
         firebaseFirestore = FirebaseFirestore.getInstance();
         Toast.makeText(this,"SignInWithEmailUSerNameAndPassword",Toast.LENGTH_LONG).show();
         ButterKnife.bind(this);
-        inputEmail.addTextChangedListener(new MyTextWatcher(inputEmail,inputLayoutEmail));
-        inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword,inputLayoutPassword));
+        inputEmail.addTextChangedListener(new EmailValidator(inputEmail,inputLayoutEmail));
+        inputPassword.addTextChangedListener(new PasswordValidator(inputPassword,inputLayoutPassword));
         //check again for email
     }
     public User getUser(){

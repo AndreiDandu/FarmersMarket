@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.Validators.EmailValidator;
 
 public class CheckEmailInDataBase extends Activity {
 
@@ -34,7 +35,7 @@ public class CheckEmailInDataBase extends Activity {
         firebaseAuth = FirebaseAuth.getInstance();
         Toast.makeText(this,"CheckEmailInDataBase",Toast.LENGTH_LONG).show();
         ButterKnife.bind(this);
-        email_field.addTextChangedListener(new MyTextWatcher(email_field,email_layout));
+        email_field.addTextChangedListener(new EmailValidator(email_field,email_layout));
     }
 
     @OnClick(R.id.next_button)

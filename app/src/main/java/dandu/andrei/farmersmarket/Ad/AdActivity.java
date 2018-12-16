@@ -5,15 +5,19 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.fxn.pix.Pix;
@@ -39,26 +43,26 @@ import dandu.andrei.farmersmarket.R;
 
 public class AdActivity extends AppCompatActivity {
     private static final String TAG = AdActivity.class.getSimpleName();
-    @BindView(R.id.ad_title_edit_id) protected EditText title;
-    @BindView(R.id.ad_description_edit_id) protected EditText adDescription;
-    @BindView(R.id.ad_quantity_edit_id) protected EditText quantity;
-    @BindView(R.id.ad_price_field_id) protected EditText price;
-    @BindView(R.id.ad_image_view1_id) protected ImageView image1;
-    @BindView(R.id.ad_image_view2_id) protected ImageView image2;
+    @BindView(R.id.ad_title_id_text) protected EditText title;
+    @BindView(R.id.ad_description_id_text) protected EditText adDescription;
+    @BindView(R.id.ad_quantity_id_text) protected EditText quantity;
+    @BindView(R.id.ad_price_id_text) protected EditText price;
 
     private ProgressDialog pDialog;
     private List<Ad> adList = new ArrayList<>();
-    private List<Bitmap> bitmapList = new ArrayList<>();
-    private Uri filePath;
+    private List<AdBitmapImage> bitmapList = new ArrayList<>();
+    private List<Uri> uriList = new ArrayList<>();
+    private List<byte[]> listOfBytes = new ArrayList<>();
     FirebaseStorage storage;
     StorageReference storageReference;
     byte[] bytes;
     private Uri uploadSessionUri;
-
+    private AdPicsAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ad_layout);
+        setContentView(R.layout.ad_activity_layout_with_recycle);
+        setAdapter();
 
         ButterKnife.bind(this);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -66,7 +70,25 @@ public class AdActivity extends AppCompatActivity {
         storageReference = storage.getReference();
 
     }
-    @OnClick(R.id.ad_submit_btn_id)
+    public void setAdapter(){
+        RecyclerView recyclerView = findViewById(R.id.ad_recyclerView);
+        adapter = new AdPicsAdapter(bitmapList,getApplicationContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+    }
+    public void convertToBitmap(Drawable drawable, int widthPixels, int heightPixels) {
+        Bitmap mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mutableBitmap);
+        drawable.setBounds(0, 0, widthPixels, heightPixels);
+        drawable.draw(canvas);
+        AdBitmapImage bitmapImage = new AdBitmapImage(mutableBitmap);
+        bitmapList.add(bitmapImage);
+    }
+    @OnClick(R.id.ad_submitBtn_id)
     protected void addAd() {
 
         Ad ad = new Ad();
@@ -85,7 +107,7 @@ public class AdActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    @OnClick(R.id.ad_pics_btn_id)
+    @OnClick(R.id.ad_addPics_btn_id)
     protected void addPicsWithPix() {
         Pix.start(AdActivity.this, 100, 5);
     }
@@ -103,27 +125,15 @@ public class AdActivity extends AppCompatActivity {
                         Bitmap scaled = com.fxn.utility.Utility.getScaledBitmap(512, d);
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                         scaled.compress(Bitmap.CompressFormat.JPEG, 80 ,stream);
-                        bytes  = stream.toByteArray();
-
-                        bitmapList.add(scaled);
+                        listOfBytes.add(stream.toByteArray());
+                        AdBitmapImage bitmapImage = new AdBitmapImage(scaled);
+                        bitmapList.add(bitmapImage);
 
                     }
-                    addBitmapToImageView();
                     uploadPic();
                 }
             }
             break;
-        }
-    }
-
-    private void addBitmapToImageView() {
-        if(!bitmapList.isEmpty()){
-            if(bitmapList.size() > 1) {
-                image1.setImageBitmap(bitmapList.get(0));
-                image2.setImageBitmap((bitmapList.get(1)));
-            }else{
-                image1.setImageBitmap(bitmapList.get(0));
-            }
         }
     }
 
@@ -143,28 +153,31 @@ public class AdActivity extends AppCompatActivity {
     }
 
     public Uri uploadPic() {
-        if (bytes != null) {
+        if (!listOfBytes.isEmpty()) {
+            adapter.notifyDataSetChanged();
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
             final StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-            UploadTask uploadTask = ref.putBytes(bytes);
-            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    progressDialog.dismiss();
-                    return ref.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if(task.isSuccessful()){
-                        Uri result = task.getResult();
-                        uploadSessionUri = result;
+            for(byte[] bytess:listOfBytes) {
+                UploadTask uploadTask = ref.putBytes(bytess);
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        progressDialog.dismiss();
+                        return ref.getDownloadUrl();
                     }
-                }
-            });
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri result = task.getResult();
+                            uploadSessionUri = result;
+                        }
+                    }
+                });
+            }
 //            ref.putBytes(bytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
 //                @Override
 //                public void onComplete(UploadTask.TaskSnapshot task) {

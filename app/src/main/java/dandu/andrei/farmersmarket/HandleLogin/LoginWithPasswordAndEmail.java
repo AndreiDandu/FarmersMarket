@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.Validators.PasswordValidator;
 
 
 public class LoginWithPasswordAndEmail extends AppCompatActivity {
@@ -43,7 +44,7 @@ public class LoginWithPasswordAndEmail extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         ButterKnife.bind(this);
         inputEmail = getIntentData();
-        inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword,inputLayoutPassword));
+        inputPassword.addTextChangedListener(new PasswordValidator(inputPassword,inputLayoutPassword));
 
     }
 

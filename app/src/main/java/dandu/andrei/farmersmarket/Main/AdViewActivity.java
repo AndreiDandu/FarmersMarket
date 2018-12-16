@@ -23,7 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dandu.andrei.farmersmarket.ListViee.Ad;
+import dandu.andrei.farmersmarket.Ad.Ad;
 import dandu.andrei.farmersmarket.R;
 
 public class AdViewActivity extends Activity {
