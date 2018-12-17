@@ -49,14 +49,12 @@ public class AdActivity extends AppCompatActivity {
     @BindView(R.id.ad_price_id_text) protected EditText price;
 
     private ProgressDialog pDialog;
-    private List<Ad> adList = new ArrayList<>();
     private List<AdBitmapImage> bitmapList = new ArrayList<>();
-    private List<Uri> uriList = new ArrayList<>();
+    private ArrayList<String> uriList = new ArrayList<>();
     private List<byte[]> listOfBytes = new ArrayList<>();
     FirebaseStorage storage;
     StorageReference storageReference;
-    byte[] bytes;
-    private Uri uploadSessionUri;
+
     private AdPicsAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +78,7 @@ public class AdActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
-    public void convertToBitmap(Drawable drawable, int widthPixels, int heightPixels) {
-        Bitmap mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(mutableBitmap);
-        drawable.setBounds(0, 0, widthPixels, heightPixels);
-        drawable.draw(canvas);
-        AdBitmapImage bitmapImage = new AdBitmapImage(mutableBitmap);
-        bitmapList.add(bitmapImage);
-    }
+
     @OnClick(R.id.ad_submitBtn_id)
     protected void addAd() {
 
@@ -97,10 +88,10 @@ public class AdActivity extends AppCompatActivity {
         ad.setPrice(Integer.parseInt(price.getText().toString()));
         ad.setQuantity(Integer.parseInt(quantity.getText().toString()));
 
-        if(uploadSessionUri != null){
-            ad.setUriPhoto(uploadSessionUri.toString());
+        if(!uriList.isEmpty()){
+            ad.setUriPhoto(uriList);
         }
-        adList.add(ad);
+       // adList.add(ad);
 
         Intent i = new Intent(this,MainActivity.class);
         i.putExtra("Ad", ad);
@@ -152,7 +143,7 @@ public class AdActivity extends AppCompatActivity {
         }
     }
 
-    public Uri uploadPic() {
+    public void uploadPic() {
         if (!listOfBytes.isEmpty()) {
             adapter.notifyDataSetChanged();
             final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -166,6 +157,7 @@ public class AdActivity extends AppCompatActivity {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                         progressDialog.dismiss();
+                        //uriList.add(ref.getDownloadUrl());
                         return ref.getDownloadUrl();
                     }
                 }).addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -173,7 +165,7 @@ public class AdActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (task.isSuccessful()) {
                             Uri result = task.getResult();
-                            uploadSessionUri = result;
+                            uriList.add(result.toString());
                         }
                     }
                 });
@@ -204,7 +196,7 @@ public class AdActivity extends AppCompatActivity {
 //                    });
 
         }
-    return  uploadSessionUri;
+
 
     }
     @Override

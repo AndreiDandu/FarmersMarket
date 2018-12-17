@@ -1,7 +1,11 @@
 package dandu.andrei.farmersmarket.Ad;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ad implements Parcelable {
 
@@ -11,7 +15,7 @@ public class Ad implements Parcelable {
     private String description;
     private int price;
     private int quantity;
-    private String uriPhoto;
+    private ArrayList<String> uriPhoto =  new ArrayList<>();
     public Ad(){}
 
     public Ad(String title, String description, int price, int quantity) {
@@ -21,11 +25,11 @@ public class Ad implements Parcelable {
         this.quantity = quantity;
     }
 
-    public String getUriPhoto() {
+    public ArrayList<String> getUriPhoto() {
         return uriPhoto;
     }
 
-    public void setUriPhoto(String uriPhoto) {
+    public void setUriPhoto(ArrayList<String> uriPhoto) {
         this.uriPhoto = uriPhoto;
     }
     public String getUid() {
@@ -75,7 +79,7 @@ public class Ad implements Parcelable {
     }
 
     private void readFromParceable(Parcel in) {
-        uriPhoto = in.readString();
+        in.readStringList(uriPhoto);
         uid = in.readString();
         title = in.readString();
         description = in.readString();
@@ -85,7 +89,7 @@ public class Ad implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(uriPhoto);
+        dest.writeStringList(uriPhoto);
         dest.writeString(uid);
         dest.writeString(title);
         dest.writeString(description);

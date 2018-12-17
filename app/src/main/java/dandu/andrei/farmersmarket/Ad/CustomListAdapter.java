@@ -72,9 +72,10 @@ public class CustomListAdapter extends ArrayAdapter<Ad> {
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        String uriPhoto = ad.getUriPhoto();
-        if(uriPhoto != null){
-            Uri parse = Uri.parse(uriPhoto);
+        List<String> uriPhoto = ad.getUriPhoto();
+        if(!uriPhoto.isEmpty()){
+
+            Uri parse = Uri.parse(uriPhoto.get(0));
             Glide.with(getContext()).load(parse).into(viewHolder.imageView);
         }
 

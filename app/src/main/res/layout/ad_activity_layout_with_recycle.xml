@@ -22,8 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Title"
-            android:inputType="textMultiLine"
-            android:text="Title" />
+            android:inputType="textMultiLine" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -33,6 +32,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:hint="Description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
@@ -41,8 +41,8 @@
             android:id="@+id/ad_description_id_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="hint"
-            android:text="Description" />
+            android:hint="Description"
+            android:inputType="textMultiLine" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -52,7 +52,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:hint="Price"
         app:layout_constraintEnd_toStartOf="@+id/textInputLayout3"
         app:layout_constraintHorizontal_bias="0.56"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +61,8 @@
             android:id="@+id/ad_price_id_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Price" />
+            android:hint="Price"
+            android:inputType="number" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -81,7 +81,8 @@
             android:id="@+id/ad_quantity_id_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Quantity" />
+            android:hint="Quantity"
+            android:inputType="number" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
