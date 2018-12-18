@@ -5,7 +5,7 @@
     android:background="@drawable/list_row_selector"
     android:padding="8dp" >
 
-    <!-- Thumbnail Image -->
+    <!-- Thumbnail AdBitmapImage -->
     <ImageView
         android:id="@+id/thumbnail"
         android:layout_width="80sp"
@@ -13,27 +13,29 @@
         android:layout_alignParentLeft="true"
         android:layout_marginRight="8dp" />
 
-    <!-- Movie Title -->
+    <!-- Title of ad -->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/thumbnail"
         android:layout_toRightOf="@+id/thumbnail"
+        android:textColor="@color/textColor"
         android:textSize="@dimen/title"
         android:textStyle="bold" />
 
-    <!-- Rating -->
+    <!-- Description -->
     <TextView
         android:id="@+id/description_id"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
         android:layout_marginTop="1dip"
+        android:textColor="@color/textColor"
         android:layout_toRightOf="@+id/thumbnail"
         android:textSize="@dimen/rating" />
 
-    <!-- Genre -->
+    <!-- Location -->
     <TextView
         android:id="@+id/input_location_list"
         android:layout_width="fill_parent"
@@ -41,17 +43,18 @@
         android:layout_below="@id/description_id"
         android:layout_marginTop="5sp"
         android:layout_toRightOf="@+id/thumbnail"
-        android:textColor="@color/genre"
+        android:drawableLeft="@drawable/ic_location16dp"
+        android:textColor="@color/textColor"
         android:textSize="@dimen/genre" />
 
-    <!-- Release Year -->
+    <!-- Price -->
     <TextView
         android:id="@+id/price_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:textColor="@color/year"
+        android:textColor="@color/textColor"
         android:textSize="@dimen/year" />
 
 </RelativeLayout>

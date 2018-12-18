@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -37,6 +38,7 @@ import dandu.andrei.farmersmarket.Ad.Ad;
 import dandu.andrei.farmersmarket.Ad.AdActivity;
 import dandu.andrei.farmersmarket.Ad.CustomListAdapter;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.Users.User;
 
 
 public class MainActivity extends AppCompatActivity
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Ad> adList = new ArrayList<Ad>();
     private ListView listView;
     private CustomListAdapter adapter;
+    protected DocumentReference userInfo;
+    protected String userLocation ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,11 +86,30 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
     }
+    private void getUserLocation() {
+        userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
+        userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot){
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    User user = documentSnapshot.toObject(User.class);
+                    userLocation = user.getLocation();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Fail to get User info " , Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     public void setListItems(){
         getAllAds();
         getAd();
         listView =  findViewById(R.id.list);
-        adapter = new CustomListAdapter(adList,getApplicationContext());
+        getUserLocation();
+        adapter = new CustomListAdapter(adList,getApplicationContext(),userLocation);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -124,7 +147,7 @@ public class MainActivity extends AppCompatActivity
                 public void onSuccess(DocumentReference documentReference) {
                     Toast.makeText(MainActivity.this, "AD save with succes in DB", Toast.LENGTH_SHORT).show();
 
-                adList.add(ad);
+                //adList.add(ad);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

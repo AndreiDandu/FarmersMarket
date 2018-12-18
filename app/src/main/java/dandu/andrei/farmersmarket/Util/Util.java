@@ -3,28 +3,33 @@ package dandu.andrei.farmersmarket.Util;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import dandu.andrei.farmersmarket.HandleLogin.CheckEmailInDataBase;
-import dandu.andrei.farmersmarket.HandleLogin.LoginWithPasswordAndEmail;
+import dandu.andrei.farmersmarket.Main.MainActivity;
+import dandu.andrei.farmersmarket.Users.User;
 
 // trebuie mail validation
 public class Util extends Activity{
+    private FirebaseAuth auth;
+    private FirebaseFirestore fireStoreDB;
+    protected DocumentReference userInfo;
+    protected String userLocation;
+    public Util(){
+        auth = FirebaseAuth.getInstance();
+        fireStoreDB = FirebaseFirestore.getInstance();
+    }
 
     public static boolean isNetworkAvailable(Context context) {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
@@ -46,6 +51,27 @@ public class Util extends Activity{
                 }
             }
         });
+    }
 
+    public void getUserLocation() {
+        userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
+        userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot){
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    User user = documentSnapshot.toObject(User.class);
+                    userLocation = user.getLocation();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(Util.this, "Fail to get User info " , Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    public String getLocation(){
+        getUserLocation();
+        return  userLocation;
     }
 }

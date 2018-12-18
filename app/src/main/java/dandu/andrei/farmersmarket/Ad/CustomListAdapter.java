@@ -21,12 +21,14 @@ public class CustomListAdapter extends ArrayAdapter<Ad> {
     private Context context;
     private LayoutInflater inflater;
     private List<Ad> adItems;
-    private ImageView view;
+    private String userLocation;
 
-    public CustomListAdapter( ArrayList<Ad> adItems ,Context context) {
+
+    public CustomListAdapter( ArrayList<Ad> adItems ,Context context,String location) {
         super(context,R.layout.list_row,adItems);
         this.context = context;
         this.adItems = adItems;
+        this.userLocation = location;
     }
     private static class ViewHolder{
        TextView txtTitle;
@@ -79,10 +81,10 @@ public class CustomListAdapter extends ArrayAdapter<Ad> {
             Glide.with(getContext()).load(parse).into(viewHolder.imageView);
         }
 
-        viewHolder.txtTitle.setText(ad.getTitle());
-        viewHolder.txtDescription.setText(ad.getDescription());
-        viewHolder.txtInputLocation.setText(String.valueOf(ad.getQuantity()));
-        viewHolder.txtPrice.setText(String.valueOf(ad.getPrice()));
+        viewHolder.txtTitle.setText("Title "+ad.getTitle());
+        viewHolder.txtDescription.setText("Description"+ad.getDescription());
+        viewHolder.txtInputLocation.setText("Buzias");
+        viewHolder.txtPrice.setText("Price "+String.valueOf(ad.getPrice()));
 
         return convertView;
     }
