@@ -81,7 +81,6 @@ public class AdActivity extends AppCompatActivity {
 
     @OnClick(R.id.ad_submitBtn_id)
     protected void addAd() {
-
         Ad ad = new Ad();
         ad.setTitle(title.getText().toString());
         ad.setDescription(adDescription.getText().toString());
@@ -91,8 +90,6 @@ public class AdActivity extends AppCompatActivity {
         if(!uriList.isEmpty()){
             ad.setUriPhoto(uriList);
         }
-       // adList.add(ad);
-
         Intent i = new Intent(this,MainActivity.class);
         i.putExtra("Ad", ad);
         startActivity(i);
@@ -151,13 +148,12 @@ public class AdActivity extends AppCompatActivity {
             progressDialog.show();
 
             final StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-            for(byte[] bytess:listOfBytes) {
+            for (byte[] bytess : listOfBytes) {
                 UploadTask uploadTask = ref.putBytes(bytess);
                 uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                         progressDialog.dismiss();
-                        //uriList.add(ref.getDownloadUrl());
                         return ref.getDownloadUrl();
                     }
                 }).addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -170,35 +166,9 @@ public class AdActivity extends AppCompatActivity {
                     }
                 });
             }
-//            ref.putBytes(bytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onComplete(UploadTask.TaskSnapshot task) {
-//                    //not good
-//                    task.getMetadata().getD
-//                    progressDialog.dismiss();
-//                    Toast.makeText(AdActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
-//                }
-//            })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(AdActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-//                                    .getTotalByteCount());
-//                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
-//                        }
-//                    });
-
         }
-
-
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

@@ -5,21 +5,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Adauga anunt" />
+            android:id="@+id/nav_new_ad"
+            android:icon="@android:drawable/ic_input_add"
+            android:title="New ad" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_my_ads"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Anunturile mele" />
+            android:title="My ads" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_following_ad"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:title="Following" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_account_info"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="Account Info" />
     </group>
 
     <item android:title="Communicate">

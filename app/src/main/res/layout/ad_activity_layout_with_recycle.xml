@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,7 +20,7 @@
             android:id="@+id/ad_title_id_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Title"
+            android:hint="@string/title"
             android:inputType="textMultiLine" />
     </android.support.design.widget.TextInputLayout>
 
@@ -40,7 +39,7 @@
             android:id="@+id/ad_description_id_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description"
+            android:hint="@string/description"
             android:inputType="textMultiLine" />
     </android.support.design.widget.TextInputLayout>
 
@@ -60,7 +59,7 @@
             android:id="@+id/ad_price_id_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Price"
+            android:hint="@string/price"
             android:inputType="number" />
     </android.support.design.widget.TextInputLayout>
 
@@ -80,7 +79,7 @@
             android:id="@+id/ad_quantity_id_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Quantity"
+            android:hint="@string/quantity"
             android:inputType="number" />
     </android.support.design.widget.TextInputLayout>
 
@@ -103,7 +102,7 @@
         android:layout_height="38dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Submit"
+        android:text="@string/submit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -120,7 +119,6 @@
         android:clipToPadding="false"
         android:padding="@dimen/spacing_xsmall"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ad_addPics_btn_id" />
 

@@ -43,8 +43,6 @@ public class AdPicsAdapter extends RecyclerView.Adapter<AdPicsAdapter.MyViewHold
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         AdBitmapImage adBitmapImage = adBitmapList.get(position);
         Glide.with(context).load(adBitmapImage.getBitmap()).into(holder.imageView);
-       // Glide.with(context).load(R.drawable.farmer_market_image).into(holder.imageView);
-
     }
 
     @Override

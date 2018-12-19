@@ -80,11 +80,12 @@ public class CustomListAdapter extends ArrayAdapter<Ad> {
             Uri parse = Uri.parse(uriPhoto.get(0));
             Glide.with(getContext()).load(parse).into(viewHolder.imageView);
         }
+        String price = context.getResources().getString(R.string.price_text, String.valueOf(ad.getPrice()));
 
         viewHolder.txtTitle.setText("Title "+ad.getTitle());
         viewHolder.txtDescription.setText("Description"+ad.getDescription());
         viewHolder.txtInputLocation.setText("Buzias");
-        viewHolder.txtPrice.setText("Price "+String.valueOf(ad.getPrice()));
+        viewHolder.txtPrice.setText(price);
 
         return convertView;
     }

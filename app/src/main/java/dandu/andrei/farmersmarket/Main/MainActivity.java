@@ -125,20 +125,17 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getBaseContext(),"o",Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
     private Ad getAd() {
         Intent i = getIntent();
         Ad ad = i.getExtras().getParcelable("Ad");
 
         if (ad != null) {
-            //adList.add(ad); always add form database
             addAd(ad);
         }
         return ad;
     }
-    //mutate in alta clasa
+
     public void addAd(final Ad ad) {
             final String uid = auth.getCurrentUser().getUid();
             ad.setUid(uid);
@@ -146,8 +143,6 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
                     Toast.makeText(MainActivity.this, "AD save with succes in DB", Toast.LENGTH_SHORT).show();
-
-                //adList.add(ad);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -194,7 +189,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -226,13 +220,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_new_ad) {
             startActivity(new Intent(MainActivity.this,UploadPicture.class));
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_my_ads) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_following_ad) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_account_info) {
 
         } else if (id == R.id.nav_share) {
 
