@@ -10,7 +10,7 @@
     <dimen name="rating">15dip</dimen>
     <dimen name="genre">13dip</dimen>
     <dimen name="year">12dip</dimen>
-
+    <dimen name="picture_offset">2dp</dimen>
 
     <dimen name="spacing_large">16dp</dimen>
     <dimen name="spacing_xsmall">2dp</dimen>

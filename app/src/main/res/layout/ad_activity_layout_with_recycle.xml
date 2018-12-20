@@ -111,7 +111,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ad_recyclerView"
-        android:layout_width="366dp"
+        android:layout_width="wrap_content"
         android:layout_height="145dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="48dp"
