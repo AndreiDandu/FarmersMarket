@@ -1,13 +1,16 @@
 package dandu.andrei.farmersmarket.Ad;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -54,7 +57,7 @@ public class CustomListAdapter extends ArrayAdapter<Ad> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, final ViewGroup parent) {
         Ad ad = adItems.get(position);
         ViewHolder viewHolder ;
         if (inflater == null) {
@@ -81,11 +84,20 @@ public class CustomListAdapter extends ArrayAdapter<Ad> {
             Glide.with(getContext()).load(parse).into(viewHolder.imageView);
         }
         String price = context.getResources().getString(R.string.price_text, String.valueOf(ad.getPrice()));
+       // String buzias = context.getResources().getString(R.string.underLinedLocation, "Buzias");
+        viewHolder.txtInputLocation.setPaintFlags(viewHolder.txtInputLocation.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         viewHolder.txtTitle.setText("Title "+ad.getTitle());
         viewHolder.txtDescription.setText("Description"+ad.getDescription());
         viewHolder.txtInputLocation.setText("Buzias");
         viewHolder.txtPrice.setText(price);
+
+        viewHolder.txtInputLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(parent.getContext(),"Clicked on Location",Toast.LENGTH_LONG).show();
+            }
+        });
 
         return convertView;
     }

@@ -45,6 +45,7 @@
         android:layout_toRightOf="@+id/thumbnail"
         android:drawableLeft="@drawable/ic_location16dp"
         android:textColor="@color/textColor"
+        android:clickable="true"
         android:textSize="@dimen/genre" />
 
     <!-- Price -->
