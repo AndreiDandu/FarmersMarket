@@ -9,12 +9,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 
 import dandu.andrei.farmersmarket.Ad.Ad;
 import dandu.andrei.farmersmarket.Ad.AdActivity;
-import dandu.andrei.farmersmarket.Ad.CustomListAdapter;
+import dandu.andrei.farmersmarket.Ad.CustomRecycledViewAdapter;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Users.User;
 
@@ -48,8 +49,8 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth auth;
     private FirebaseFirestore fireStoreDB;
     private ArrayList<Ad> adList = new ArrayList<Ad>();
-    private ListView listView;
-    private CustomListAdapter adapter;
+    private RecyclerView listView;
+    private CustomRecycledViewAdapter adapter;
     protected DocumentReference userInfo;
     protected String userLocation ;
     @Override
@@ -109,15 +110,9 @@ public class MainActivity extends AppCompatActivity
         getAd();
         listView =  findViewById(R.id.list);
         getUserLocation();
-        adapter = new CustomListAdapter(adList,getApplicationContext(),userLocation);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+        adapter = new CustomRecycledViewAdapter(adList, getApplicationContext(), new CustomRecycledViewAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Object listItem = listView.getItemAtPosition(i);
-                Ad ad = (Ad) listItem;
-
+            public void onItemClick(Ad ad) {
                 Intent intent = new Intent(MainActivity.this,AdViewActivity.class);
                 intent.putExtra("Ad",ad);
                 startActivity(intent);
@@ -125,6 +120,15 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getBaseContext(),"o",Toast.LENGTH_SHORT).show();
             }
         });
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
+
+        listView.setLayoutManager(layoutManager);
+        listView.setHasFixedSize(true);
+        DividerItemDecoration div = new DividerItemDecoration(listView.getContext(),layoutManager.getOrientation());
+        listView.addItemDecoration(div);
+        listView.setAdapter(adapter);
+
     }
     private Ad getAd() {
         Intent i = getIntent();

@@ -42,7 +42,11 @@ public class AdPicsAdapter extends RecyclerView.Adapter<AdPicsAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         AdBitmapImage adBitmapImage = adBitmapList.get(position);
-        Glide.with(context).load(adBitmapImage.getBitmap()).into(holder.imageView);
+        if(adBitmapImage.getBitmap() != null) {
+            Glide.with(context).load(adBitmapImage.getBitmap()).into(holder.imageView);
+        }else if(adBitmapImage.getStringUri() != null){
+            Glide.with(context).load(adBitmapImage.getStringUri()).into(holder.imageView);
+        }
     }
 
     @Override

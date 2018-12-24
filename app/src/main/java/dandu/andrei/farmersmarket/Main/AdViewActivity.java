@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -20,23 +22,29 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dandu.andrei.farmersmarket.Ad.Ad;
+import dandu.andrei.farmersmarket.Ad.AdBitmapImage;
+import dandu.andrei.farmersmarket.Ad.AdPicsAdapter;
+import dandu.andrei.farmersmarket.Ad.BitmapOffsetDecoration;
 import dandu.andrei.farmersmarket.R;
 
 public class AdViewActivity extends Activity {
-    @BindView(R.id.ad_title_edit_id) protected EditText title;
-    @BindView(R.id.ad_description_edit_id) protected EditText adDescription;
-    @BindView(R.id.ad_quantity_edit_id) protected EditText quantity;
-    @BindView(R.id.ad_price_field_id) protected EditText price;
-    @BindView(R.id.ad_image_view1_id) protected ImageView image1;
-    @BindView(R.id.ad_image_view2_id) protected ImageView image2;
+    @BindView(R.id.ad_view_activity_title_id) protected EditText title;
+    @BindView(R.id.ad_view_activity_description_id) protected EditText adDescription;
+    @BindView(R.id.ad_view_activity_quantity_id) protected EditText quantity;
+    @BindView(R.id.ad_view_activity_price_id) protected EditText price;
 
     protected FirebaseFirestore firebaseFirestore;
     protected FirebaseAuth firebaseAuth;
     protected Ad ad;
+    protected List<AdBitmapImage> bitmapList = new ArrayList<>();
+    protected AdPicsAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,8 +65,24 @@ public class AdViewActivity extends Activity {
             adDescription.setText(ad.getDescription());
             quantity.setText(String.valueOf(ad.getQuantity()));
             price.setText(String.valueOf(ad.getPrice()));
-            Glide.with(this).load(ad.getUriPhoto()).into(image1);
+            ArrayList<String> uriPhotos = ad.getUriPhoto();
+            for (String uriPhoto:uriPhotos) {
+                AdBitmapImage img = new AdBitmapImage(uriPhoto);
+                bitmapList.add(img);
+            }
+            setAdapter();
         }
+    }
+    public void setAdapter(){
+        RecyclerView recyclerView = findViewById(R.id.ad_recyclerView);
+        adapter = new AdPicsAdapter(bitmapList,getApplicationContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        BitmapOffsetDecoration itemDecoration = new BitmapOffsetDecoration(getApplication().getBaseContext(),R.dimen.picture_offset);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setAdapter(adapter);
     }
 
     private Ad getDataFromMainActivity() {
@@ -67,7 +91,7 @@ public class AdViewActivity extends Activity {
 
         return  adFromMain;
     }
-    @OnClick(R.id.ad_submit_btn_id)
+    @OnClick(R.id.ad_view_submit_btn_id)
     public void updateAdToFireStore() {
         CollectionReference ads = firebaseFirestore.collection("Ads");
         ads.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
