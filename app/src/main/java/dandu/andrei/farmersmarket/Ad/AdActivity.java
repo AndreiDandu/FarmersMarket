@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,9 +19,8 @@ import android.widget.Toast;
 
 import com.fxn.pix.Pix;
 import com.fxn.utility.PermUtil;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -37,10 +36,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.Validators.TextValidator;
 
 public class AdActivity extends AppCompatActivity {
     private static final String TAG = AdActivity.class.getSimpleName();
     @BindView(R.id.ad_title_id_text) protected EditText title;
+    @BindView(R.id.textInputLayout) protected TextInputLayout title_layout;
     @BindView(R.id.ad_description_id_text) protected EditText adDescription;
     @BindView(R.id.ad_quantity_id_text) protected EditText quantity;
     @BindView(R.id.ad_price_id_text) protected EditText price;
@@ -63,10 +64,11 @@ public class AdActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        title.addTextChangedListener(new TextValidator(title,title_layout));
 
     }
     public void setAdapter(){
-        RecyclerView recyclerView = findViewById(R.id.ad_recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.ad_activity_recyclerView_id);
         adapter = new AdPicsAdapter(bitmapList,getApplicationContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         BitmapOffsetDecoration itemDecoration = new BitmapOffsetDecoration(getApplication().getBaseContext(),R.dimen.picture_offset);
@@ -79,6 +81,7 @@ public class AdActivity extends AppCompatActivity {
 
     @OnClick(R.id.ad_submitBtn_id)
     protected void addAd() {
+        uploadPic();
         Ad ad = new Ad();
         ad.setTitle(title.getText().toString());
         ad.setDescription(adDescription.getText().toString());
@@ -88,6 +91,7 @@ public class AdActivity extends AppCompatActivity {
         if(!uriList.isEmpty()){
             ad.setUriPhoto(uriList);
         }
+
         Intent i = new Intent(this,MainActivity.class);
         i.putExtra("Ad", ad);
         startActivity(i);
@@ -114,9 +118,10 @@ public class AdActivity extends AppCompatActivity {
                         listOfBytes.add(stream.toByteArray());
                         AdBitmapImage bitmapImage = new AdBitmapImage(scaled);
                         bitmapList.add(bitmapImage);
+                        adapter.notifyDataSetChanged();
 
                     }
-                    uploadPic();
+
                 }
             }
             break;
@@ -144,25 +149,25 @@ public class AdActivity extends AppCompatActivity {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
-
-            final StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
             for (byte[] bytess : listOfBytes) {
-                UploadTask uploadTask = ref.putBytes(bytess);
-                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        progressDialog.dismiss();
-                        return ref.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri result = task.getResult();
-                            uriList.add(result.toString());
-                        }
-                    }
-                });
+            final StorageReference filePath = storageReference.child("images/" + UUID.randomUUID().toString());
+                uriList.add(filePath.toString());
+                UploadTask uploadTask = filePath.putBytes(bytess);
+                uploadTask
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                progressDialog.dismiss();
+                                Toast.makeText(AdActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(AdActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         }
     }

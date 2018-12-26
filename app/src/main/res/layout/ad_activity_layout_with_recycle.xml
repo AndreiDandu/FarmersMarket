@@ -70,7 +70,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/ad_recyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/ad_activity_recyclerView_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
         app:layout_constraintVertical_bias="0.0">
@@ -106,11 +106,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ad_recyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/ad_activity_recyclerView_id"
         app:layout_constraintVertical_bias="1.0" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/ad_recyclerView"
+        android:id="@+id/ad_activity_recyclerView_id"
         android:layout_width="wrap_content"
         android:layout_height="145dp"
         android:layout_marginStart="8dp"

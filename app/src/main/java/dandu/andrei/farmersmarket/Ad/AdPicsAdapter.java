@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -45,7 +47,11 @@ public class AdPicsAdapter extends RecyclerView.Adapter<AdPicsAdapter.MyViewHold
         if(adBitmapImage.getBitmap() != null) {
             Glide.with(context).load(adBitmapImage.getBitmap()).into(holder.imageView);
         }else if(adBitmapImage.getStringUri() != null){
-            Glide.with(context).load(adBitmapImage.getStringUri()).into(holder.imageView);
+            //TODO Make interface for firebasestorage
+            FirebaseStorage storage;
+            storage = FirebaseStorage.getInstance();
+            StorageReference referenceFromUrl = storage.getReferenceFromUrl(adBitmapImage.getStringUri());
+            Glide.with(context).load(referenceFromUrl).into(holder.imageView);
         }
     }
 

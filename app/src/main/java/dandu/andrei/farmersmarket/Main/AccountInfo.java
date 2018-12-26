@@ -35,13 +35,10 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dandu.andrei.farmersmarket.Ad.AdActivity;
-import dandu.andrei.farmersmarket.Ad.AdBitmapImage;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Users.User;
 
@@ -164,7 +161,7 @@ public class AccountInfo extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            final StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
+            final StorageReference ref = storageReference.child("users/" + auth.getCurrentUser().toString());
                 UploadTask uploadTask = ref.putBytes(bytes);
                 uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
@@ -178,6 +175,8 @@ public class AccountInfo extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Uri result = task.getResult();
                             profilePictureUri = result.toString();
+                            //TODO : update user info with picture Change userInfo model
+
                         }
                     }
                 });

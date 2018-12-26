@@ -1,5 +1,6 @@
 package dandu.andrei.farmersmarket.Main;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,11 +9,13 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +35,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity
     private CustomRecycledViewAdapter adapter;
     protected DocumentReference userInfo;
     protected String userLocation ;
+    FirebaseStorage firebaseStorage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +85,7 @@ public class MainActivity extends AppCompatActivity
         String email = currentUser.getEmail();
         fireStoreDB = FirebaseFirestore.getInstance();
 
+        firebaseStorage = FirebaseStorage.getInstance();
 
         setListItems();
 
@@ -119,16 +126,86 @@ public class MainActivity extends AppCompatActivity
 
                 Toast.makeText(getBaseContext(),"o",Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void onLongClick(final Ad ad,final int pos) {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                deleteAd(ad);
+                                deletePicturesFromAd(ad);
+                                adapter.delete(pos);
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+
+            }
         });
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-
-
         listView.setLayoutManager(layoutManager);
         listView.setHasFixedSize(true);
         DividerItemDecoration div = new DividerItemDecoration(listView.getContext(),layoutManager.getOrientation());
         listView.addItemDecoration(div);
         listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
+    }
+    public void deletePicturesFromAd(Ad ad){
+        ArrayList<String> uriPhotos = ad.getUriPhoto();
+        for (String uriPhoto:uriPhotos) {
+            StorageReference referenceFromUrl = firebaseStorage.getReferenceFromUrl(uriPhoto);
+            referenceFromUrl.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG,"Photo's deleted");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG,"Fail on photo delete");
+                }
+            });
+        }
+
+    }
+    public void deleteAd(final Ad ad) {
+        CollectionReference ads = fireStoreDB.collection("Ads");
+        ads.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Ad adFromFireStore = document.toObject(Ad.class);
+                        if (adFromFireStore.getTitle().equals(ad.getTitle())) {
+                            DocumentReference docRef = fireStoreDB.collection("Ads").document(document.getId());
+                            docRef.delete();
+                           //delete picture too
+
+                            Toast.makeText(MainActivity.this, "Ad deleted", Toast.LENGTH_LONG).show();
+                           // startActivity(new Intent(AdViewActivity.this, MainActivity.class));
+                        }
+                    }
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Ad cannot be deleted", Toast.LENGTH_LONG).show();
+            }
+        });
     }
     private Ad getAd() {
         Intent i = getIntent();

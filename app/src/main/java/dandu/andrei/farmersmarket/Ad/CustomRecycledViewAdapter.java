@@ -2,7 +2,6 @@ package dandu.andrei.farmersmarket.Ad;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     public interface OnItemClickListener{
         void onItemClick(Ad ad);
+        void onLongClick(Ad ad,int v);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
@@ -41,13 +43,18 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
             ButterKnife.bind(this,itemView);
 
         }
-        public void bind(final Ad ad, final OnItemClickListener listener) {
-            //name.setText(item.name);
-            // Picasso.with(itemView.getContext()).load(item.imageUrl).into(image);
+        public void bind(final Ad ad, final OnItemClickListener listener,final int pos) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onItemClick(ad);
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onLongClick(ad,pos);
+                    return false;
                 }
             });
         }
@@ -70,12 +77,14 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Ad ad = listWithAds.get(position);
-        holder.bind(listWithAds.get(position),listener);
+        holder.bind(listWithAds.get(position),listener,position);
         List<String> uriPhoto = ad.getUriPhoto();
         if(!uriPhoto.isEmpty()){
 
-            Uri parse = Uri.parse(uriPhoto.get(0));
-            Glide.with(context).load(parse).into(holder.imageView);
+            FirebaseStorage storage;
+            storage = FirebaseStorage.getInstance();
+            StorageReference referenceFromUrl = storage.getReferenceFromUrl(uriPhoto.get(0));
+            Glide.with(context).load(referenceFromUrl).into(holder.imageView);
         }
         String price = context.getResources().getString(R.string.price_text, String.valueOf(ad.getPrice()));
         holder.txtInputLocation.setPaintFlags(holder.txtInputLocation.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -99,5 +108,10 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         return listWithAds.size();
     }
 
+    public void delete(int pos){
+        listWithAds.remove(pos);
+        notifyItemRemoved(pos);
+        notifyDataSetChanged();
 
+    }
 }
