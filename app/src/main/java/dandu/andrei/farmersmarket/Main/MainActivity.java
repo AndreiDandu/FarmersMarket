@@ -19,9 +19,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,12 +55,13 @@ public class MainActivity extends AppCompatActivity
     public static final String TAG = MainActivity.class.getSimpleName();
     private FirebaseAuth auth;
     private FirebaseFirestore fireStoreDB;
-    private ArrayList<Ad> adList = new ArrayList<Ad>();
+    private ArrayList<Ad> adList = new ArrayList<>();
     private RecyclerView listView;
     private CustomRecycledViewAdapter adapter;
     protected DocumentReference userInfo;
-    protected String userLocation ;
-    FirebaseStorage firebaseStorage;
+    protected String profileUriPicture;
+    protected FirebaseStorage firebaseStorage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,24 +87,27 @@ public class MainActivity extends AppCompatActivity
         FirebaseUser currentUser = auth.getCurrentUser();
         String email = currentUser.getEmail();
         fireStoreDB = FirebaseFirestore.getInstance();
-
         firebaseStorage = FirebaseStorage.getInstance();
 
         setListItems();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         setUserInNavDrawer(navigationView,email);
+        getUserPicture();
         navigationView.setNavigationItemSelectedListener(this);
 
     }
-    private void getUserLocation() {
+    //TODO move to Util
+    private void getUserPicture() {
         userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
         userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot){
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     User user = documentSnapshot.toObject(User.class);
-                    userLocation = user.getLocation();
+                    profileUriPicture = user.getUriPhoto();
+                    ImageView viewById1 = (ImageView) findViewById(R.id.profile_picture_main_activity);
+                    Glide.with(MainActivity.this).load(profileUriPicture).into(viewById1);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -116,43 +122,7 @@ public class MainActivity extends AppCompatActivity
         getAllAds();
         getAd();
         listView =  findViewById(R.id.list);
-        getUserLocation();
-        adapter = new CustomRecycledViewAdapter(adList, getApplicationContext(), new CustomRecycledViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Ad ad) {
-                Intent intent = new Intent(MainActivity.this,AdViewActivity.class);
-                intent.putExtra("Ad",ad);
-                startActivity(intent);
-
-                Toast.makeText(getBaseContext(),"o",Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onLongClick(final Ad ad,final int pos) {
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
-                            case DialogInterface.BUTTON_POSITIVE:
-                                deleteAd(ad);
-                                deletePicturesFromAd(ad);
-                                adapter.delete(pos);
-                                break;
-
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                //No button clicked
-                                break;
-                        }
-                    }
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
-
-            }
-        });
-
+        onClickAndLongClickItems();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         listView.setLayoutManager(layoutManager);
         listView.setHasFixedSize(true);
@@ -162,23 +132,68 @@ public class MainActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
 
     }
+    protected void onClickAndLongClickItems(){
+
+        adapter = new CustomRecycledViewAdapter(adList, this, new CustomRecycledViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Ad ad) {
+                Intent intent = new Intent(MainActivity.this,AdViewActivity.class);
+                intent.putExtra("Ad",ad);
+                startActivity(intent);
+
+                Toast.makeText(getBaseContext(),"Clicked on ad",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLongClick(final Ad ad,final int pos) {
+                if (ad.getUid().equals(auth.getCurrentUser().getUid())) {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    deleteAd(ad);
+                                    deletePicturesFromAd(ad);
+                                    adapter.delete(pos);
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
+
+                }
+            }
+        });
+
+    }
     public void deletePicturesFromAd(Ad ad){
         ArrayList<String> uriPhotos = ad.getUriPhoto();
-        for (String uriPhoto:uriPhotos) {
-            StorageReference referenceFromUrl = firebaseStorage.getReferenceFromUrl(uriPhoto);
-            referenceFromUrl.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d(TAG,"Photo's deleted");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG,"Fail on photo delete");
-                }
-            });
+        if(uriPhotos != null && uriPhotos.size() != 0) {
+            for (String uriPhoto : uriPhotos) {
+                StorageReference referenceFromUrl = firebaseStorage.getReferenceFromUrl(uriPhoto);
+                referenceFromUrl.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Photo's deleted");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Fail on photo delete");
+                    }
+                });
+            }
         }
-
     }
     public void deleteAd(final Ad ad) {
         CollectionReference ads = fireStoreDB.collection("Ads");
@@ -191,10 +206,8 @@ public class MainActivity extends AppCompatActivity
                         if (adFromFireStore.getTitle().equals(ad.getTitle())) {
                             DocumentReference docRef = fireStoreDB.collection("Ads").document(document.getId());
                             docRef.delete();
-                           //delete picture too
-
                             Toast.makeText(MainActivity.this, "Ad deleted", Toast.LENGTH_LONG).show();
-                           // startActivity(new Intent(AdViewActivity.this, MainActivity.class));
+
                         }
                     }
 
@@ -234,6 +247,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getAllAds() {
+        adList.clear();
         CollectionReference ads = fireStoreDB.collection("Ads");
         ads.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 
@@ -255,6 +269,7 @@ public class MainActivity extends AppCompatActivity
     private void setUserInNavDrawer(NavigationView navigationView, String email){
         View headerView = navigationView.getHeaderView(0);
         TextView viewById = (TextView) headerView.findViewById(R.id.textView);
+
         viewById.setText(email);
     }
 
@@ -302,9 +317,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_new_ad) {
-            startActivity(new Intent(MainActivity.this,UploadPicture.class));
+            getAllAds();
         } else if (id == R.id.nav_my_ads) {
-
+            getMyAds();
         } else if (id == R.id.nav_following_ad) {
 
         } else if (id == R.id.nav_account_info) {
@@ -319,7 +334,29 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    public void getMyAds() {
+        adList.clear();
+        CollectionReference ads = fireStoreDB.collection("Ads");
+        ads.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    Ad ad = documentSnapshot.toObject(Ad.class);
+                    if (ad.getUid().equals(auth.getCurrentUser().getUid())) {
+
+                        adList.add(ad);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this,"Fail to read ads from DB",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

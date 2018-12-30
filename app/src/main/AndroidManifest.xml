@@ -63,7 +63,9 @@
         <activity android:name=".HandleLogin.SignInWithUserInfo" />
         <activity android:name=".Main.UploadPicture" />
         <activity android:name=".Ad.AdActivity" />
-        <activity android:name=".Main.AdViewActivity" />
+        <activity android:name=".Main.AdViewActivity"
+                  android:windowSoftInputMode="stateHidden"
+            />
         <activity android:name=".Main.AccountInfo" />
 
     </application>

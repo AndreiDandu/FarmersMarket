@@ -47,7 +47,7 @@ public class LoginStartScreen extends Activity {
     public void onClickFacebookButton(){
         Toast.makeText(this, "Not working momentarily!", Toast.LENGTH_SHORT).show();
     }
-
+    //TODO: To be deleted
     @OnClick(R.id.skip_btn_id)
     public void onClickSkipButton() {
         firebaseAuth.signInWithEmailAndPassword("testSkipUser1@gmail.com", "icecube01").addOnCompleteListener(new OnCompleteListener<AuthResult>() {

@@ -54,8 +54,19 @@ public class AdViewActivity extends Activity {
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         ad = getDataFromMainActivity();
+        setEditTextNonEditable();
         setValuesFromAd();
         //add textWatcher on EditText
+        //TODO add delete and ad picture button function
+    }
+//if is not user's ad then dont make it editable
+    private void setEditTextNonEditable() {
+        if(!ad.getUid().equals(firebaseAuth.getCurrentUser().getUid())){
+            title.setEnabled(false);
+            adDescription.setEnabled(false);
+            quantity.setEnabled(false);
+            price.setEnabled(false);
+        }
     }
 
     private void setValuesFromAd() {

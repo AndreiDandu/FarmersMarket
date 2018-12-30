@@ -59,7 +59,7 @@ public class SignInWithUserInfo extends Activity {
         ButterKnife.bind(this);
         inputEmail.addTextChangedListener(new EmailValidator(inputEmail,inputLayoutEmail));
         inputPassword.addTextChangedListener(new PasswordValidator(inputPassword,inputLayoutPassword));
-        //check again for email
+        //TODO: check again for email
     }
     public User getUser(){
         int zipcode= Integer.parseInt(inputZipcode.getText().toString());

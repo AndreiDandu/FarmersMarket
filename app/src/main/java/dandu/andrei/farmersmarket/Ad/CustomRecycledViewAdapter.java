@@ -1,6 +1,7 @@
 package dandu.andrei.farmersmarket.Ad;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
@@ -20,6 +20,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.Util.Util;
+import dandu.andrei.farmersmarket.loginWithGoogle.MapsActivity;
 
 public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycledViewAdapter.MyViewHolder> {
     private List<Ad> listWithAds;
@@ -81,22 +83,23 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         List<String> uriPhoto = ad.getUriPhoto();
         if(!uriPhoto.isEmpty()){
 
-            FirebaseStorage storage;
-            storage = FirebaseStorage.getInstance();
-            StorageReference referenceFromUrl = storage.getReferenceFromUrl(uriPhoto.get(0));
-            Glide.with(context).load(referenceFromUrl).into(holder.imageView);
+            StorageReference url = Util.getUrl(uriPhoto.get(0));
+            Glide.with(context).load(url).into(holder.imageView);
         }
         String price = context.getResources().getString(R.string.price_text, String.valueOf(ad.getPrice()));
         holder.txtInputLocation.setPaintFlags(holder.txtInputLocation.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
+        String userLocation = Util.getUserLocation();
         holder.txtTitle.setText(ad.getTitle());
         holder.txtDescription.setText(ad.getDescription());
-        holder.txtInputLocation.setText("Buzias");
+        if(userLocation != null) {
+            holder.txtInputLocation.setText(userLocation);
+        }
         holder.txtPrice.setText(price);
 
         holder.txtInputLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                context.startActivity(new Intent(context,MapsActivity.class));
                 Toast.makeText(context,"Clicked on Location",Toast.LENGTH_LONG).show();
             }
         });
