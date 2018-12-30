@@ -1,6 +1,7 @@
 package dandu.andrei.farmersmarket.Ad;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.loginWithGoogle.MapsActivity;
 
 public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycledViewAdapter.MyViewHolder> {
     private List<Ad> listWithAds;
@@ -97,6 +100,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         holder.txtInputLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                context.startActivity(new Intent(context,MapsActivity.class));
                 Toast.makeText(context,"Clicked on Location",Toast.LENGTH_LONG).show();
             }
         });

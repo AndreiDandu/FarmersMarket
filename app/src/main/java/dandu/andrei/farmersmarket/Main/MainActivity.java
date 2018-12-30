@@ -19,10 +19,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.common.images.ImageRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView listView;
     private CustomRecycledViewAdapter adapter;
     protected DocumentReference userInfo;
-    protected String userLocation ;
+    protected String profileUriPicture;
     FirebaseStorage firebaseStorage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,24 +87,26 @@ public class MainActivity extends AppCompatActivity
         FirebaseUser currentUser = auth.getCurrentUser();
         String email = currentUser.getEmail();
         fireStoreDB = FirebaseFirestore.getInstance();
-
         firebaseStorage = FirebaseStorage.getInstance();
 
         setListItems();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         setUserInNavDrawer(navigationView,email);
+        getUserPicture();
         navigationView.setNavigationItemSelectedListener(this);
 
     }
-    private void getUserLocation() {
+    private void getUserPicture() {
         userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
         userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot){
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     User user = documentSnapshot.toObject(User.class);
-                    userLocation = user.getLocation();
+                    profileUriPicture = user.getUriPhoto();
+                    ImageView viewById1 = (ImageView) findViewById(R.id.profile_picture_main_activity);
+                    Glide.with(MainActivity.this).load(profileUriPicture).into(viewById1);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -116,8 +121,19 @@ public class MainActivity extends AppCompatActivity
         getAllAds();
         getAd();
         listView =  findViewById(R.id.list);
-        getUserLocation();
-        adapter = new CustomRecycledViewAdapter(adList, getApplicationContext(), new CustomRecycledViewAdapter.OnItemClickListener() {
+        onClickAndLongClickItems();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        listView.setLayoutManager(layoutManager);
+        listView.setHasFixedSize(true);
+        DividerItemDecoration div = new DividerItemDecoration(listView.getContext(),layoutManager.getOrientation());
+        listView.addItemDecoration(div);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+    }
+    protected void onClickAndLongClickItems(){
+
+        adapter = new CustomRecycledViewAdapter(adList, this, new CustomRecycledViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Ad ad) {
                 Intent intent = new Intent(MainActivity.this,AdViewActivity.class);
@@ -153,32 +169,25 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        listView.setLayoutManager(layoutManager);
-        listView.setHasFixedSize(true);
-        DividerItemDecoration div = new DividerItemDecoration(listView.getContext(),layoutManager.getOrientation());
-        listView.addItemDecoration(div);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
     }
     public void deletePicturesFromAd(Ad ad){
         ArrayList<String> uriPhotos = ad.getUriPhoto();
-        for (String uriPhoto:uriPhotos) {
-            StorageReference referenceFromUrl = firebaseStorage.getReferenceFromUrl(uriPhoto);
-            referenceFromUrl.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d(TAG,"Photo's deleted");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG,"Fail on photo delete");
-                }
-            });
+        if(uriPhotos != null && uriPhotos.size() != 0) {
+            for (String uriPhoto : uriPhotos) {
+                StorageReference referenceFromUrl = firebaseStorage.getReferenceFromUrl(uriPhoto);
+                referenceFromUrl.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Photo's deleted");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Fail on photo delete");
+                    }
+                });
+            }
         }
-
     }
     public void deleteAd(final Ad ad) {
         CollectionReference ads = fireStoreDB.collection("Ads");
@@ -191,10 +200,8 @@ public class MainActivity extends AppCompatActivity
                         if (adFromFireStore.getTitle().equals(ad.getTitle())) {
                             DocumentReference docRef = fireStoreDB.collection("Ads").document(document.getId());
                             docRef.delete();
-                           //delete picture too
-
                             Toast.makeText(MainActivity.this, "Ad deleted", Toast.LENGTH_LONG).show();
-                           // startActivity(new Intent(AdViewActivity.this, MainActivity.class));
+
                         }
                     }
 
@@ -255,6 +262,7 @@ public class MainActivity extends AppCompatActivity
     private void setUserInNavDrawer(NavigationView navigationView, String email){
         View headerView = navigationView.getHeaderView(0);
         TextView viewById = (TextView) headerView.findViewById(R.id.textView);
+
         viewById.setText(email);
     }
 

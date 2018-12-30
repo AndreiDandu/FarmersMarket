@@ -8,6 +8,7 @@ public class User {
     private String street;
     private int zipCode;
     private int phoneNumber;
+    private String uriPhoto;
 
     public User() {
     }
@@ -77,6 +78,13 @@ public class User {
 
     public void setPhoneNumber(int phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    public String getUriPhoto() {
+        return uriPhoto;
+    }
+
+    public void setUriPhoto(String uriPhoto) {
+        this.uriPhoto = uriPhoto;
     }
 
 }

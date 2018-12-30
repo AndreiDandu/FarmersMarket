@@ -1,5 +1,8 @@
 package dandu.andrei.farmersmarket.loginWithGoogle;
 
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -9,6 +12,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.List;
 
 import dandu.andrei.farmersmarket.R;
 
@@ -40,9 +46,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> buzias = geocoder.getFromLocationName("Buzias", 1);
+            Address address = buzias.get(0);
+            double latitude = address.getLatitude();
+            double longitude = address.getLongitude();
+            // Add a marker in Sydney and move the camera
+            LatLng sydney = new LatLng(latitude,longitude);
+            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,13 +57,17 @@ public class AccountInfo extends AppCompatActivity {
     @BindView(R.id.user_phone_number_layout_id) protected TextInputLayout inputLayoutPhoneNumber;
     @BindView(R.id.user_zipCode_id) protected EditText inputZipcode;
     @BindView(R.id.user_zipCode_layout_id) protected TextInputLayout inputLayoutZipcode;
-    @BindView(R.id.user_profile_image) protected ImageView userProfilePicturel;
+    @BindView(R.id.user_profile_image) protected ImageView userProfilePictureView;
+
     protected FirebaseFirestore firebaseFirestore;
     protected FirebaseAuth auth;
     protected DocumentReference userInfo;
     StorageReference storageReference;
     protected  byte[] bytes;
     protected String profilePictureUri;
+    protected boolean isChanged;
+    protected User users;
+    FirebaseStorage firebaseStorage;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +75,8 @@ public class AccountInfo extends AppCompatActivity {
         ButterKnife.bind(this);
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-        FirebaseStorage instance = FirebaseStorage.getInstance();
-        storageReference = instance.getReference();
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference();
         getUserInfo();
     }
 
@@ -82,6 +88,7 @@ public class AccountInfo extends AppCompatActivity {
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     User user = documentSnapshot.toObject(User.class);
                     setUserInfo(user);
+                    users = user;
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -98,6 +105,8 @@ public class AccountInfo extends AppCompatActivity {
         inputStreetName.setText(user.getStreet());
         inputPhoneNumber.setText(String.valueOf(user.getPhoneNumber()));
         inputZipcode.setText(String.valueOf(user.getZipCode()));
+        Glide.with(this).load(user.getUriPhoto()).into(userProfilePictureView);
+
     }
     @OnClick(R.id.user_submit_button_id)
     public void updateUserInfoBtn() {
@@ -108,7 +117,26 @@ public class AccountInfo extends AppCompatActivity {
             userInfo.update("street", inputStreetName.getText().toString());
             userInfo.update("zipCode",Integer.parseInt( inputZipcode.getText().toString()));
             userInfo.update("phoneNumber", Integer.parseInt(inputPhoneNumber.getText().toString()));
+            if(isChanged) {
+                userInfo.update("uriPhoto", profilePictureUri);
+                deletePreviousProfilePicture();
+            }
             startActivity(new Intent(AccountInfo.this,MainActivity.class));
+        }
+    }
+
+    private void deletePreviousProfilePicture() {
+        String uriPhoto = users.getUriPhoto();
+        if(uriPhoto != null) {
+            StorageReference referenceFromUrl = firebaseStorage.getReferenceFromUrl(uriPhoto);
+            if (storageReference != null) {
+                referenceFromUrl.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(AccountInfo.class.getName(), "Profile picture deleted");
+                    }
+                });
+            }
         }
     }
 
@@ -131,7 +159,8 @@ public class AccountInfo extends AppCompatActivity {
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                         scaled.compress(Bitmap.CompressFormat.JPEG, 80 ,stream);
                         bytes = stream.toByteArray();
-                        Glide.with(this).load(scaled).into(userProfilePicturel);
+                        Glide.with(this).load(scaled).into(userProfilePictureView);
+                        isChanged = true;
                     }
 
                 }
@@ -161,7 +190,8 @@ public class AccountInfo extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            final StorageReference ref = storageReference.child("users/" + auth.getCurrentUser().toString());
+            final StorageReference ref = storageReference.child("users/" + UUID.randomUUID().toString());
+
                 UploadTask uploadTask = ref.putBytes(bytes);
                 uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
@@ -175,8 +205,6 @@ public class AccountInfo extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Uri result = task.getResult();
                             profilePictureUri = result.toString();
-                            //TODO : update user info with picture Change userInfo model
-
                         }
                     }
                 });
