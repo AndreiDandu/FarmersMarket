@@ -27,12 +27,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dandu.andrei.farmersmarket.R;
-
+//TODO: TO be deleted No USAGE
 public class UploadPicture extends Activity {
 
   @BindView(R.id.picture_upload_id) protected ImageView imageView;
   private Uri filePath;
-  private final int PICK_IMAGE_REQUEST=71;
+  private final int PICK_IMAGE_REQUEST = 71;
   FirebaseStorage storage;
   StorageReference storageReference;
 
