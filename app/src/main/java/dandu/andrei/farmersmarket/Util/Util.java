@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -13,12 +14,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+
+import dandu.andrei.farmersmarket.Ad.Ad;
 import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.Users.User;
 
@@ -28,6 +35,7 @@ public class Util extends Activity{
     private static FirebaseFirestore fireStoreDB = FirebaseFirestore.getInstance();
     private static FirebaseStorage storage = FirebaseStorage.getInstance();
     private static String location;
+    private static String TAG = Util.class.getSimpleName();
     public Util(){
     }
 
@@ -70,6 +78,65 @@ public class Util extends Activity{
             }
         });
         return location;
+    }
+    public static void deletePicturesFromAd(Ad ad){
+        ArrayList<String> uriPhotos = ad.getUriPhoto();
+        if(uriPhotos != null && uriPhotos.size() != 0) {
+            for (String uriPhoto : uriPhotos) {
+                StorageReference referenceFromUrl = storage.getReferenceFromUrl(uriPhoto);
+                referenceFromUrl.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Photo's deleted");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                       Log.d(TAG, "Fail on photo delete");
+                    }
+                });
+            }
+        }
+    }
+    public static void deleteAd(final Ad ad) {
+        CollectionReference ads = fireStoreDB.collection("Ads");
+        ads.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Ad adFromFireStore = document.toObject(Ad.class);
+                        if (adFromFireStore.getTitle().equals(ad.getTitle())) {
+                            DocumentReference docRef = fireStoreDB.collection("Ads").document(document.getId());
+                            docRef.delete();
+                            Log.d(TAG,"Ad deleted");
+
+                        }
+                    }
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG,"Ad cannot be deleted");
+            }
+        });
+    }
+    public static void addAd(final Ad ad) {
+        final String uid = auth.getCurrentUser().getUid();
+        ad.setUid(uid);
+        fireStoreDB.collection("Ads").add(ad).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+              Log.d(TAG, "AD save with succes in DB");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Fail to save Ad in DB");
+            }
+        });
     }
 
     //Get uri for glide to load

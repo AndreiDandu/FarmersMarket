@@ -29,8 +29,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener{
-        void onItemClick(Ad ad);
-        void onLongClick(Ad ad,int v);
+        void onLongClick(Ad ad,int v,View view);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
@@ -45,17 +44,12 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
             ButterKnife.bind(this,itemView);
 
         }
-        public void bind(final Ad ad, final OnItemClickListener listener,final int pos) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(ad);
-                }
-            });
+        public void bind(final Ad ad, final OnItemClickListener listener,final int pos,final View view) {
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    listener.onLongClick(ad,pos);
+                    listener.onLongClick(ad,pos,view);
                     return false;
                 }
             });
@@ -77,9 +71,10 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Ad ad = listWithAds.get(position);
-        holder.bind(listWithAds.get(position),listener,position);
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
+        final Ad ad = listWithAds.get(position);
+        holder.bind(listWithAds.get(position),listener,position,holder.itemView);
+
         List<String> uriPhoto = ad.getUriPhoto();
         if(!uriPhoto.isEmpty()){
 
@@ -103,7 +98,6 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
                 Toast.makeText(context,"Clicked on Location",Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     @Override

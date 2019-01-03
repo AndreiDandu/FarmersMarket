@@ -37,7 +37,7 @@ import butterknife.OnClick;
 import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Validators.TextValidator;
-
+//TODO check for exception
 public class AdActivity extends AppCompatActivity {
     private static final String TAG = AdActivity.class.getSimpleName();
     @BindView(R.id.ad_title_id_text) protected EditText title;

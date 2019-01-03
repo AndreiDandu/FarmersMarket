@@ -1,6 +1,5 @@
 package dandu.andrei.farmersmarket.Main;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,13 +8,13 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,15 +37,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import dandu.andrei.farmersmarket.Ad.Ad;
 import dandu.andrei.farmersmarket.Ad.AdActivity;
 import dandu.andrei.farmersmarket.Ad.CustomRecycledViewAdapter;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Users.User;
+import dandu.andrei.farmersmarket.Util.Util;
 
 
 public class MainActivity extends AppCompatActivity
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity
     protected DocumentReference userInfo;
     protected String profileUriPicture;
     protected FirebaseStorage firebaseStorage;
+    private ActionMode actionMode;
+    private Map<Ad,Integer> mapWithAdAndPos = new HashMap<>();
+    private List<View> listWithViews = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,123 +132,50 @@ public class MainActivity extends AppCompatActivity
         listView.setLayoutManager(layoutManager);
         listView.setHasFixedSize(true);
         DividerItemDecoration div = new DividerItemDecoration(listView.getContext(),layoutManager.getOrientation());
+        //DividerItemDecoration divVertical = new DividerItemDecoration(listView.getContext(),DividerItemDecoration.VERTICAL);
+        //divVertical.setDrawable(ContextCompat.getDrawable(listView.getContext(),R.drawable.divider));
+        //listView.addItemDecoration(divVertical);
         listView.addItemDecoration(div);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
     }
+    //TODO dece coboara jos selected din list de intrebat(dece plus lista de poze din adviewActivity)
     protected void onClickAndLongClickItems(){
 
         adapter = new CustomRecycledViewAdapter(adList, this, new CustomRecycledViewAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Ad ad) {
-                Intent intent = new Intent(MainActivity.this,AdViewActivity.class);
-                intent.putExtra("Ad",ad);
-                startActivity(intent);
-
-                Toast.makeText(getBaseContext(),"Clicked on ad",Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onLongClick(final Ad ad,final int pos) {
+            public void onLongClick(final Ad ad,final int pos,final View view) {
                 if (ad.getUid().equals(auth.getCurrentUser().getUid())) {
-                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-
-                            switch (which) {
-                                case DialogInterface.BUTTON_POSITIVE:
-                                    deleteAd(ad);
-                                    deletePicturesFromAd(ad);
-                                    adapter.delete(pos);
-                                    break;
-
-                                case DialogInterface.BUTTON_NEGATIVE:
-                                    //No button clicked
-                                    break;
-                            }
-                        }
-                    };
-
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                            .setNegativeButton("No", dialogClickListener).show();
+                    if (actionMode == null) {
+                        actionMode = startActionMode(modelCallBack);
+                    }
+                    view.setSelected(true);
+                    ad.setSelected(true);
+                    //ad.setSelected(!ad.getIsSelected());
+                    //view.setBackgroundColor(ad.getIsSelected() ? Color.CYAN : Color.WHITE);
+                    //is ad exist at second then delete from list
+                    if(mapWithAdAndPos.containsKey(ad)) {
+                        view.setSelected(false);
+                        mapWithAdAndPos.remove(ad);
+                    }else{
+                        mapWithAdAndPos.put(ad, pos);
+                    }
+                    listWithViews.add(view);
+                }
 
                 }
-            }
-        });
-
-    }
-    public void deletePicturesFromAd(Ad ad){
-        ArrayList<String> uriPhotos = ad.getUriPhoto();
-        if(uriPhotos != null && uriPhotos.size() != 0) {
-            for (String uriPhoto : uriPhotos) {
-                StorageReference referenceFromUrl = firebaseStorage.getReferenceFromUrl(uriPhoto);
-                referenceFromUrl.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Photo's deleted");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Fail on photo delete");
-                    }
-                });
-            }
-        }
-    }
-    public void deleteAd(final Ad ad) {
-        CollectionReference ads = fireStoreDB.collection("Ads");
-        ads.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Ad adFromFireStore = document.toObject(Ad.class);
-                        if (adFromFireStore.getTitle().equals(ad.getTitle())) {
-                            DocumentReference docRef = fireStoreDB.collection("Ads").document(document.getId());
-                            docRef.delete();
-                            Toast.makeText(MainActivity.this, "Ad deleted", Toast.LENGTH_LONG).show();
-
-                        }
-                    }
-
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Ad cannot be deleted", Toast.LENGTH_LONG).show();
-            }
         });
     }
+
     private Ad getAd() {
         Intent i = getIntent();
         Ad ad = i.getExtras().getParcelable("Ad");
 
         if (ad != null) {
-            addAd(ad);
+            Util.addAd(ad);
         }
         return ad;
-    }
-
-    public void addAd(final Ad ad) {
-            final String uid = auth.getCurrentUser().getUid();
-            ad.setUid(uid);
-            fireStoreDB.collection("Ads").add(ad).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
-                    Toast.makeText(MainActivity.this, "AD save with succes in DB", Toast.LENGTH_SHORT).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, "Fail to save Ad in DB", Toast.LENGTH_SHORT).show();
-                }
-            });
     }
 
     public void getAllAds() {
@@ -361,4 +293,55 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
+    private ActionMode.Callback modelCallBack = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.setTitle("Options");
+            mode.getMenuInflater().inflate(R.menu.action_mode_menu, menu);
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            int itemId = item.getItemId();
+            switch (itemId){
+                case R.id.delete:
+                    for (Map.Entry<Ad,Integer> adAndPosition:mapWithAdAndPos.entrySet()) {
+                        Util.deleteAd(adAndPosition.getKey());
+                        Util.deletePicturesFromAd(adAndPosition.getKey());
+                        adapter.delete(adAndPosition.getValue());
+                    }
+
+                    break;
+                case R.id.edit:
+                    if(!mapWithAdAndPos.isEmpty() && mapWithAdAndPos.size() < 2 ) {
+                        Intent intent = new Intent(MainActivity.this, AdViewActivity.class);
+                        for (Map.Entry<Ad,Integer> adAndPosition:mapWithAdAndPos.entrySet()){
+                        intent.putExtra("Ad",adAndPosition.getKey());
+                        }
+                        startActivity(intent);
+                    }
+                    break;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            actionMode = null;
+            if(!listWithViews.isEmpty()){
+                for (View view:listWithViews) {
+                    view.setSelected(false);
+                }
+            }
+            mapWithAdAndPos.clear();
+            Log.d(TAG,"Action mode destroyed");
+        }
+    };
 }

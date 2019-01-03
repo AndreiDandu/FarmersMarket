@@ -18,7 +18,8 @@ import dandu.andrei.farmersmarket.Util.Util;
 
 public class AdPicsAdapter extends RecyclerView.Adapter<AdPicsAdapter.MyViewHolder> {
     private List<AdBitmapImage> adBitmapList;
-    Context context;
+    private Context context;
+
 
     public AdPicsAdapter(List<AdBitmapImage> bitmapList,Context context){
         this.adBitmapList = bitmapList;

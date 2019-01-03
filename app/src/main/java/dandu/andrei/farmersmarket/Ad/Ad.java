@@ -1,11 +1,9 @@
 package dandu.andrei.farmersmarket.Ad;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Ad implements Parcelable {
 
@@ -15,6 +13,7 @@ public class Ad implements Parcelable {
     private String description;
     private int price;
     private int quantity;
+    private boolean isSelected;
     private ArrayList<String> uriPhoto =  new ArrayList<>();
     public Ad(){}
 
@@ -24,7 +23,12 @@ public class Ad implements Parcelable {
         this.price = price;
         this.quantity = quantity;
     }
-
+    public void setSelected(boolean isSelected){
+        this.isSelected = isSelected;
+    }
+    public boolean getIsSelected(){
+        return isSelected;
+    }
     public ArrayList<String> getUriPhoto() {
         return uriPhoto;
     }
