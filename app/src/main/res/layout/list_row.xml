@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/list_row_selector"
-    android:padding="8dp"
     android:clickable="true">
 
     <!-- Thumbnail AdBitmapImage -->
@@ -11,52 +11,91 @@
         android:id="@+id/thumbnail"
         android:layout_width="80sp"
         android:layout_height="80sp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="8dp" />
+        android:layout_alignParentLeft="true" />
 
-    <!-- Title of ad -->
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/thumbnail"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:textColor="@color/textColor"
-        android:textSize="@dimen/title"
-        android:textStyle="bold" />
+        android:layout_alignParentTop="true"
+        android:layout_margin="8sp"
+        android:orientation="horizontal"
+        android:paddingLeft="80sp"
+        android:weightSum="100">
 
-    <!-- Description -->
-    <TextView
-        android:id="@+id/description_id"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:layout_marginTop="1dip"
-        android:textColor="@color/textColor"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:textSize="@dimen/rating" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="25"
+            android:orientation="vertical">
 
-    <!-- Location -->
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/textColor"
+                tools:text="Title" />
+
+            <!-- Description -->
+            <TextView
+                android:id="@+id/description_id"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2sp"
+                android:layout_marginTop="1dip"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/rating"
+                tools:text="Lorem ipsum dolor sic amet Lorem ipsum dolor sic amet" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="75"
+            android:gravity="end"
+            android:orientation="vertical">
+
+
+            <!-- Price -->
+            <TextView
+                android:id="@+id/price_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                tools:text="23" />
+
+            <TextView
+                android:id="@+id/price_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="lei"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                tools:text="lei" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/input_location_list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/description_id"
-        android:layout_marginTop="5sp"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:drawableLeft="@drawable/ic_location16dp"
-        android:textColor="@color/textColor"
-        android:clickable="true"
-        android:textSize="@dimen/genre" />
-
-    <!-- Price -->
-    <TextView
-        android:id="@+id/price_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5sp"
+        android:clickable="true"
+        android:drawableLeft="@drawable/ic_location16dp"
         android:textColor="@color/textColor"
-        android:textSize="@dimen/year" />
+        android:textSize="@dimen/genre"
+        android:paddingBottom="4sp"
+        android:paddingRight="4sp"
+        tools:text="Buzias" />
+
+    <!-- Title of ad -->
+
+    <!-- Location -->
+
 
 </RelativeLayout>

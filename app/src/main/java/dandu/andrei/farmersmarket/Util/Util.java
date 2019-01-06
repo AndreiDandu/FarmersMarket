@@ -2,6 +2,8 @@ package dandu.andrei.farmersmarket.Util;
 
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
@@ -59,7 +61,8 @@ public class Util extends Activity{
         });
     }
 
-    public static String getUserLocation() {
+    public static LiveData<String> getUserLocation() {
+        final MutableLiveData<String> location = new MutableLiveData<>();
         DocumentReference userInfo;
 
         userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
@@ -68,7 +71,7 @@ public class Util extends Activity{
             public void onSuccess(DocumentSnapshot documentSnapshot){
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     User user = documentSnapshot.toObject(User.class);
-                    location = user.getLocation();
+                    location.setValue(user.getLocation());
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity
     //TODO dece coboara jos selected din list de intrebat(dece plus lista de poze din adviewActivity)
     protected void onClickAndLongClickItems(){
 
-        adapter = new CustomRecycledViewAdapter(adList, this, new CustomRecycledViewAdapter.OnItemClickListener() {
+        adapter = new CustomRecycledViewAdapter(adList, this, this, new CustomRecycledViewAdapter.OnItemClickListener() {
             @Override
             public void onLongClick(final Ad ad,final int pos,final View view) {
                 if (ad.getUid().equals(auth.getCurrentUser().getUid())) {
@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
                     Ad ad = documentSnapshot.toObject(Ad.class);
+                    ad.setId(documentSnapshot.getId());
                     adList.add(ad);
                 }
                 adapter.notifyDataSetChanged();

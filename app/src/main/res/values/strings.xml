@@ -23,7 +23,7 @@
     <string name="err_msg_password">Enter the password</string>
     <string name="Login">Login</string>
     <string name="next_button">Next</string>
-    <string name="price_text">Price %1$s</string>
+    <string name="price_text">%1$s</string>
     <string name="underLinedLocation">&lt;u>%1$s&lt;/u></string>
     <string name="title">Title</string>
     <string name="description">Description</string>

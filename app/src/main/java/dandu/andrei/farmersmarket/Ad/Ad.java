@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Ad implements Parcelable {
 
 
+    private String id;
     private String uid;
     private String title;
     private String description;
@@ -80,6 +81,15 @@ public class Ad implements Parcelable {
     }
     public Ad(Parcel in ){
         readFromParceable(in);
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     private void readFromParceable(Parcel in) {

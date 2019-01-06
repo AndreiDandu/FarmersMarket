@@ -1,9 +1,12 @@
 package dandu.andrei.farmersmarket.Ad;
 
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,41 +29,51 @@ import dandu.andrei.farmersmarket.loginWithGoogle.MapsActivity;
 public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycledViewAdapter.MyViewHolder> {
     private List<Ad> listWithAds;
     private Context context;
+    private final LifecycleOwner lifecycleOwner;
     private final OnItemClickListener listener;
 
-    public interface OnItemClickListener{
-        void onLongClick(Ad ad,int v,View view);
+    public interface OnItemClickListener {
+        void onLongClick(Ad ad, int v, View view);
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.title) TextView txtTitle;
-        @BindView(R.id.description_id) TextView txtDescription;
-        @BindView(R.id.input_location_list) TextView txtInputLocation;
-        @BindView(R.id.price_id) TextView txtPrice;
-        @BindView(R.id.thumbnail) ImageView imageView;
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.title)
+        TextView txtTitle;
+        @BindView(R.id.description_id)
+        TextView txtDescription;
+        @BindView(R.id.input_location_list)
+        TextView txtInputLocation;
+        @BindView(R.id.price_id)
+        TextView txtPrice;
+        @BindView(R.id.thumbnail)
+        ImageView imageView;
 
-        public MyViewHolder(View itemView){
+        public MyViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
 
         }
-        public void bind(final Ad ad, final OnItemClickListener listener,final int pos,final View view) {
+
+        public void bind(final Ad ad, final OnItemClickListener listener, final int pos, final View view) {
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    listener.onLongClick(ad,pos,view);
+                    listener.onLongClick(ad, pos, view);
                     return false;
                 }
             });
         }
     }
-    public CustomRecycledViewAdapter(List<Ad> listWithAds, Context context, OnItemClickListener listener){
+
+    public CustomRecycledViewAdapter(List<Ad> listWithAds, Context context, LifecycleOwner lifecycleOwner, OnItemClickListener listener) {
         this.listWithAds = listWithAds;
         this.context = context;
-        this.listener =listener;
+        this.lifecycleOwner = lifecycleOwner;
+        this.listener = listener;
 
     }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -73,29 +86,33 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         final Ad ad = listWithAds.get(position);
-        holder.bind(listWithAds.get(position),listener,position,holder.itemView);
+        holder.bind(listWithAds.get(position), listener, position, holder.itemView);
 
         List<String> uriPhoto = ad.getUriPhoto();
-        if(!uriPhoto.isEmpty()){
+        if (!uriPhoto.isEmpty()) {
 
             StorageReference url = Util.getUrl(uriPhoto.get(0));
             Glide.with(context).load(url).into(holder.imageView);
         }
         String price = context.getResources().getString(R.string.price_text, String.valueOf(ad.getPrice()));
         holder.txtInputLocation.setPaintFlags(holder.txtInputLocation.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        String userLocation = Util.getUserLocation();
+        //TODO
+        Util.getUserLocation().observe(lifecycleOwner, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String location) {
+                holder.txtInputLocation.setText(location);
+            }
+        });
         holder.txtTitle.setText(ad.getTitle());
         holder.txtDescription.setText(ad.getDescription());
-        if(userLocation != null) {
-            holder.txtInputLocation.setText(userLocation);
-        }
-        holder.txtPrice.setText(price);
 
+        holder.txtPrice.setText(price);
+        holder.itemView.setTag(ad.getId());
         holder.txtInputLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context,MapsActivity.class));
-                Toast.makeText(context,"Clicked on Location",Toast.LENGTH_LONG).show();
+                context.startActivity(new Intent(context, MapsActivity.class));
+                Toast.makeText(context, "Clicked on Location", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -105,10 +122,13 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         return listWithAds.size();
     }
 
-    public void delete(int pos){
+
+    public void delete(int pos) {
         listWithAds.remove(pos);
         notifyItemRemoved(pos);
         notifyDataSetChanged();
 
     }
+
+
 }
