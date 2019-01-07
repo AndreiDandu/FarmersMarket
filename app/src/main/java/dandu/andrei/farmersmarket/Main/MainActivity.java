@@ -9,6 +9,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth auth;
     private FirebaseFirestore fireStoreDB;
     private ArrayList<Ad> adList = new ArrayList<>();
-    private RecyclerView listView;
+    private RecyclerView recyclerViewList;
     private CustomRecycledViewAdapter adapter;
     protected DocumentReference userInfo;
     protected String profileUriPicture;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity
     private ActionMode actionMode;
     private Map<Ad,Integer> mapWithAdAndPos = new HashMap<>();
     private List<View> listWithViews = new ArrayList<>();
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +103,19 @@ public class MainActivity extends AppCompatActivity
         setUserInNavDrawer(navigationView,email);
         getUserPicture();
         navigationView.setNavigationItemSelectedListener(this);
+        searchView = findViewById(R.id.mSearch);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
 
     }
     //TODO move to Util
@@ -126,17 +142,17 @@ public class MainActivity extends AppCompatActivity
     public void setListItems(){
         getAllAds();
         getAd();
-        listView =  findViewById(R.id.list);
+
+        recyclerViewList =  findViewById(R.id.list);
         onClickAndLongClickItems();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        listView.setLayoutManager(layoutManager);
-        listView.setHasFixedSize(true);
-        DividerItemDecoration div = new DividerItemDecoration(listView.getContext(),layoutManager.getOrientation());
-        //DividerItemDecoration divVertical = new DividerItemDecoration(listView.getContext(),DividerItemDecoration.VERTICAL);
-        //divVertical.setDrawable(ContextCompat.getDrawable(listView.getContext(),R.drawable.divider));
-        //listView.addItemDecoration(divVertical);
-        listView.addItemDecoration(div);
-        listView.setAdapter(adapter);
+        recyclerViewList.setLayoutManager(layoutManager);
+        recyclerViewList.setHasFixedSize(true);
+        DividerItemDecoration div = new DividerItemDecoration(recyclerViewList.getContext(),layoutManager.getOrientation());
+
+        recyclerViewList.addItemDecoration(div);
+        recyclerViewList.setItemAnimator(new DefaultItemAnimator());
+        recyclerViewList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
     }
@@ -298,7 +314,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.setTitle("Options");
-            mode.getMenuInflater().inflate(R.menu.action_mode_menu, menu);
+          //  mode.getMenuInflater().inflate(R.menu.action_mode_menu, menu);
 
             return true;
         }
@@ -312,7 +328,7 @@ public class MainActivity extends AppCompatActivity
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             int itemId = item.getItemId();
             switch (itemId){
-                case R.id.delete:
+                case R.id.account_settings:
                     for (Map.Entry<Ad,Integer> adAndPosition:mapWithAdAndPos.entrySet()) {
                         Util.deleteAd(adAndPosition.getKey());
                         Util.deletePicturesFromAd(adAndPosition.getKey());
@@ -320,7 +336,7 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     break;
-                case R.id.edit:
+                case R.id.ad_activity_recyclerView_id:
                     if(!mapWithAdAndPos.isEmpty() && mapWithAdAndPos.size() < 2 ) {
                         Intent intent = new Intent(MainActivity.this, AdViewActivity.class);
                         for (Map.Entry<Ad,Integer> adAndPosition:mapWithAdAndPos.entrySet()){

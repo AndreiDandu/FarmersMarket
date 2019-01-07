@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,14 +25,19 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.Util.ListFilter;
 import dandu.andrei.farmersmarket.Util.Util;
 import dandu.andrei.farmersmarket.loginWithGoogle.MapsActivity;
 
-public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycledViewAdapter.MyViewHolder> {
-    private List<Ad> listWithAds;
+public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycledViewAdapter.MyViewHolder> implements Filterable {
+    public List<Ad> listWithAds;
     private Context context;
     private final LifecycleOwner lifecycleOwner;
     private final OnItemClickListener listener;
+    private ListFilter  filter;
+    private List<Ad> filterAds;
+
+
 
     public interface OnItemClickListener {
         void onLongClick(Ad ad, int v, View view);
@@ -71,6 +78,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         this.context = context;
         this.lifecycleOwner = lifecycleOwner;
         this.listener = listener;
+        this.filterAds = listWithAds;
 
     }
 
@@ -128,6 +136,13 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         notifyItemRemoved(pos);
         notifyDataSetChanged();
 
+    }
+    @Override
+    public Filter getFilter() {
+        if(filterAds == null){
+            filter = new ListFilter(filterAds,this);
+        }
+        return  filter;
     }
 
 
