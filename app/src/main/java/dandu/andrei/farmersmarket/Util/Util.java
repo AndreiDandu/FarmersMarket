@@ -7,9 +7,12 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +32,7 @@ import java.util.ArrayList;
 
 import dandu.andrei.farmersmarket.Ad.Ad;
 import dandu.andrei.farmersmarket.Main.MainActivity;
+import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Users.User;
 
 // trebuie mail validation
@@ -60,7 +64,25 @@ public class Util extends Activity{
             }
         });
     }
-
+    public static void getUserPicture(final Context context,final ImageView img) {
+       DocumentReference userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
+        userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot){
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    User user = documentSnapshot.toObject(User.class);
+                     String profileUriPicture = user.getUriPhoto();
+                    //ImageView viewById1 = (ImageView) findViewById(R.id.profile_picture_main_activity);
+                    Glide.with(context).load(profileUriPicture).into(img);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "Fail to get User info " , Toast.LENGTH_LONG).show();
+            }
+        });
+    }
     public static LiveData<String> getUserLocation() {
         final MutableLiveData<String> location = new MutableLiveData<>();
         DocumentReference userInfo;

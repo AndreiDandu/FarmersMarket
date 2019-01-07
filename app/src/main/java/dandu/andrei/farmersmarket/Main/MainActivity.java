@@ -13,6 +13,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ActionMode;
@@ -20,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
 import dandu.andrei.farmersmarket.Ad.Ad;
 import dandu.andrei.farmersmarket.Ad.AdActivity;
 import dandu.andrei.farmersmarket.Ad.CustomRecycledViewAdapter;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+
     private FirebaseAuth auth;
     private FirebaseFirestore fireStoreDB;
     private ArrayList<Ad> adList = new ArrayList<>();
@@ -101,42 +103,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         setUserInNavDrawer(navigationView,email);
-        getUserPicture();
+
         navigationView.setNavigationItemSelectedListener(this);
-        searchView = findViewById(R.id.mSearch);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-
-    }
-    //TODO move to Util
-    private void getUserPicture() {
-        userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
-        userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot){
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    User user = documentSnapshot.toObject(User.class);
-                    profileUriPicture = user.getUriPhoto();
-                    ImageView viewById1 = (ImageView) findViewById(R.id.profile_picture_main_activity);
-                    Glide.with(MainActivity.this).load(profileUriPicture).into(viewById1);
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Fail to get User info " , Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     public void setListItems(){
@@ -168,9 +137,6 @@ public class MainActivity extends AppCompatActivity
                     }
                     view.setSelected(true);
                     ad.setSelected(true);
-                    //ad.setSelected(!ad.getIsSelected());
-                    //view.setBackgroundColor(ad.getIsSelected() ? Color.CYAN : Color.WHITE);
-                    //is ad exist at second then delete from list
                     if(mapWithAdAndPos.containsKey(ad)) {
                         view.setSelected(false);
                         mapWithAdAndPos.remove(ad);
@@ -218,7 +184,8 @@ public class MainActivity extends AppCompatActivity
     private void setUserInNavDrawer(NavigationView navigationView, String email){
         View headerView = navigationView.getHeaderView(0);
         TextView viewById = (TextView) headerView.findViewById(R.id.textView);
-
+        ImageView viewById1 = headerView.findViewById(R.id.profile_picture_main_activity);
+        Util.getUserPicture(MainActivity.this,viewById1);
         viewById.setText(email);
     }
 
@@ -314,7 +281,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.setTitle("Options");
-          //  mode.getMenuInflater().inflate(R.menu.action_mode_menu, menu);
+            mode.getMenuInflater().inflate(R.menu.action_mode_menu, menu);
 
             return true;
         }
@@ -328,15 +295,16 @@ public class MainActivity extends AppCompatActivity
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             int itemId = item.getItemId();
             switch (itemId){
-                case R.id.account_settings:
+                case R.id.delete:
                     for (Map.Entry<Ad,Integer> adAndPosition:mapWithAdAndPos.entrySet()) {
                         Util.deleteAd(adAndPosition.getKey());
                         Util.deletePicturesFromAd(adAndPosition.getKey());
                         adapter.delete(adAndPosition.getValue());
+                        modelCallBack.onDestroyActionMode(mode);
                     }
 
                     break;
-                case R.id.ad_activity_recyclerView_id:
+                case R.id.edit:
                     if(!mapWithAdAndPos.isEmpty() && mapWithAdAndPos.size() < 2 ) {
                         Intent intent = new Intent(MainActivity.this, AdViewActivity.class);
                         for (Map.Entry<Ad,Integer> adAndPosition:mapWithAdAndPos.entrySet()){

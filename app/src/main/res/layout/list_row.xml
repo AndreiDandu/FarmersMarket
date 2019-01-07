@@ -11,7 +11,8 @@
         android:id="@+id/thumbnail"
         android:layout_width="80sp"
         android:layout_height="80sp"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        tools:src="@drawable/farmer_market_image"/>
 
 
     <LinearLayout
@@ -44,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2sp"
                 android:layout_marginTop="1dip"
-                android:textColor="@color/textColor"
+                android:textColor="@color/secondaryText"
                 android:textSize="@dimen/rating"
                 tools:text="Lorem ipsum dolor sic amet Lorem ipsum dolor sic amet" />
 

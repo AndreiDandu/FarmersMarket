@@ -92,6 +92,7 @@
       android:layout_marginTop="20dp"
       android:layout_marginEnd="8dp"
       android:text="Add Pics"
+      android:drawableStart="@drawable/ic_menu_camera"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +100,7 @@
 
   <Button
       android:id="@+id/ad_view_submit_btn_id"
-      android:layout_width="110dp"
+      android:layout_width="match_parent"
       android:layout_height="38dp"
       android:layout_marginTop="8dp"
       android:layout_marginBottom="8dp"
@@ -130,6 +131,7 @@
       android:layout_marginTop="8dp"
       android:layout_marginEnd="8dp"
       android:layout_marginBottom="8dp"
+      android:drawableStart="@android:drawable/ic_delete"
       android:text="Delete"
       app:layout_constraintBottom_toTopOf="@+id/ad_recyclerView"
       app:layout_constraintEnd_toEndOf="parent"

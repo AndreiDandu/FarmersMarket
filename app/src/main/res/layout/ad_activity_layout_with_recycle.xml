@@ -91,6 +91,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:text="Add Pics"
+        android:drawableStart="@drawable/button_design"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +100,7 @@
 
     <Button
         android:id="@+id/ad_submitBtn_id"
-        android:layout_width="110dp"
+        android:layout_width="match_parent"
         android:layout_height="38dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -107,7 +109,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ad_activity_recyclerView_id"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        android:background="@color/colorPrimary"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ad_activity_recyclerView_id"
