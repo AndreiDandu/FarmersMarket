@@ -1,5 +1,7 @@
 package dandu.andrei.farmersmarket.Main;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -58,14 +60,11 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
-
     private FirebaseAuth auth;
     private FirebaseFirestore fireStoreDB;
     private ArrayList<Ad> adList = new ArrayList<>();
     private RecyclerView recyclerViewList;
     private CustomRecycledViewAdapter adapter;
-    protected DocumentReference userInfo;
-    protected String profileUriPicture;
     protected FirebaseStorage firebaseStorage;
     private ActionMode actionMode;
     private Map<Ad,Integer> mapWithAdAndPos = new HashMap<>();
@@ -197,11 +196,35 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        if(!searchView.isIconified()){
+            searchView.setIconified(true);
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // filter recycler view when query submitted
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // filter recycler view when text is changed
+                adapter.getFilter().filter(query);
+                return false;
+            }
+        });
         return true;
     }
 
@@ -222,7 +245,9 @@ public class MainActivity extends AppCompatActivity
         if(id == R.id.account_settings){
             startActivity(new Intent(MainActivity.this,AccountInfo.class));
         }
-
+        if(id == R.id.action_search){
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -300,7 +325,7 @@ public class MainActivity extends AppCompatActivity
                         Util.deleteAd(adAndPosition.getKey());
                         Util.deletePicturesFromAd(adAndPosition.getKey());
                         adapter.delete(adAndPosition.getValue());
-                        modelCallBack.onDestroyActionMode(mode);
+                       // modelCallBack.onDestroyActionMode(mode);
                     }
 
                     break;

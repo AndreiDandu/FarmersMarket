@@ -98,8 +98,8 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
         List<String> uriPhoto = ad.getUriPhoto();
         if (!uriPhoto.isEmpty()) {
-
             StorageReference url = Util.getUrl(uriPhoto.get(0));
+
             Glide.with(context).load(url).into(holder.imageView);
         }
         String price = context.getResources().getString(R.string.price_text, String.valueOf(ad.getPrice()));
@@ -130,16 +130,14 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         return listWithAds.size();
     }
 
-
     public void delete(int pos) {
         listWithAds.remove(pos);
         notifyItemRemoved(pos);
-        notifyDataSetChanged();
-
+       // notifyDataSetChanged();
     }
     @Override
     public Filter getFilter() {
-        if(filterAds == null){
+        if(filter == null){
             filter = new ListFilter(filterAds,this);
         }
         return  filter;

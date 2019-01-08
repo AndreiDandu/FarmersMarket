@@ -25,21 +25,16 @@ public class ListFilter extends Filter {
     protected FilterResults performFiltering(CharSequence constraint) {
         FilterResults results = new FilterResults();
 
-        //CHECK CONSTRAINT VALIDITY
         if (constraint != null && constraint.length() > 0) {
-            //CHANGE TO UPPER
+
             constraint = constraint.toString().toUpperCase();
-            //STORE OUR FILTERED PLAYERS
             ArrayList<Ad> filteredAds = new ArrayList<>();
 
-            for (int i = 0; i < filterList.size(); i++) {
-                //CHECK
-                if (filterList.get(i).getTitle().toUpperCase().contains(constraint)) {
-                    //ADD PLAYER TO FILTERED PLAYERS
-                    filteredAds.add(filterList.get(i));
+            for (Ad ads : filterList) {
+                if (ads.getTitle().toUpperCase().contains(constraint)) {
+                    filteredAds.add(ads);
                 }
-            }
-
+        }
             results.count = filteredAds.size();
             results.values = filteredAds;
         } else {

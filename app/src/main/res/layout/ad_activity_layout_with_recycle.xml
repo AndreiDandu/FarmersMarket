@@ -91,7 +91,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:text="Add Pics"
-        android:drawableStart="@drawable/button_design"
+        android:drawableStart="@android:drawable/ic_menu_camera"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
