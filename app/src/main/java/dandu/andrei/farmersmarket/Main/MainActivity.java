@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity
         recyclerViewList.setItemAnimator(new DefaultItemAnimator());
         recyclerViewList.setAdapter(adapter);
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
-                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
+                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this,MainActivity.this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewList);
         //TODO de verificat ca ii de doua ori
         adapter.notifyDataSetChanged();//???
@@ -376,7 +376,7 @@ public class MainActivity extends AppCompatActivity
 //            final int deletedIndex = viewHolder.getAdapterPosition();
 
             // remove the item from recycler view
-            adapter.delete(viewHolder.getAdapterPosition());
+           // adapter.delete(viewHolder.getAdapterPosition());
 
             // showing snack bar with Undo option
 //            Snackbar snackbar = Snackbar
