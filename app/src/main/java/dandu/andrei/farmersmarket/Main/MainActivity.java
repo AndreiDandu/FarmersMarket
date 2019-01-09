@@ -124,8 +124,10 @@ public class MainActivity extends AppCompatActivity
         recyclerViewList.addItemDecoration(div);
         recyclerViewList.setItemAnimator(new DefaultItemAnimator());
         recyclerViewList.setAdapter(adapter);
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
+                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewList);
+        //TODO de verificat ca ii de doua ori
         adapter.notifyDataSetChanged();//???
 
 
@@ -178,6 +180,7 @@ public class MainActivity extends AppCompatActivity
                     ad.setId(documentSnapshot.getId());
                     adList.add(ad);
                 }
+                //TODO
                 adapter.notifyDataSetChanged();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -364,6 +367,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (viewHolder instanceof CustomRecycledViewAdapter.MyViewHolder) {
+
             // get the removed item name to display it in snack bar
             //String name = cartList.get(viewHolder.getAdapterPosition()).getName();
 
