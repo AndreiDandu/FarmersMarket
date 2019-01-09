@@ -29,6 +29,28 @@
             android:text="Delete"
             android:textColor="#fff"
             android:textSize="13dp" />
+        <ImageView
+            android:id="@+id/follow_icon"
+            android:layout_width="53dp"
+            android:layout_height="46dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@android:drawable/star_big_on" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/follow_icon"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="59dp"
+            android:layout_marginRight="145dp"
+            android:layout_toLeftOf="@id/delete_icon"
+            android:text="Follow"
+            android:textColor="#fff"
+            android:textSize="13dp" />
+
 
     </RelativeLayout>
     <!-- Thumbnail AdBitmapImage -->
