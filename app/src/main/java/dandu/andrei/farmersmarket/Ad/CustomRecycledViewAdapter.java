@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,9 +56,13 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         TextView txtPrice;
         @BindView(R.id.thumbnail)
         ImageView imageView;
+       public  RelativeLayout background,foreground;
+       //public LinearLayout foreground;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            background = itemView.findViewById(R.id.view_background);
+            foreground = itemView.findViewById(R.id.view_foreground);
             ButterKnife.bind(this, itemView);
 
         }
@@ -86,7 +92,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View inflate = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_row, parent, false);
+                .inflate(R.layout.list_row_test, parent, false);
 
         return new MyViewHolder(inflate);
     }

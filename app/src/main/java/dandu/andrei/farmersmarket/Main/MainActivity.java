@@ -1,6 +1,7 @@
 package dandu.andrei.farmersmarket.Main;
 
 import android.app.SearchManager;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -53,11 +55,12 @@ import dandu.andrei.farmersmarket.Ad.AdActivity;
 import dandu.andrei.farmersmarket.Ad.CustomRecycledViewAdapter;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Users.User;
+import dandu.andrei.farmersmarket.Util.RecyclerItemTouchHelper;
 import dandu.andrei.farmersmarket.Util.Util;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener ,RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     private FirebaseAuth auth;
@@ -121,7 +124,11 @@ public class MainActivity extends AppCompatActivity
         recyclerViewList.addItemDecoration(div);
         recyclerViewList.setItemAnimator(new DefaultItemAnimator());
         recyclerViewList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewList);
+        adapter.notifyDataSetChanged();//???
+
+
 
     }
     //TODO dece coboara jos selected din list de intrebat(dece plus lista de poze din adviewActivity)
@@ -354,4 +361,32 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG,"Action mode destroyed");
         }
     };
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if (viewHolder instanceof CustomRecycledViewAdapter.MyViewHolder) {
+            // get the removed item name to display it in snack bar
+            //String name = cartList.get(viewHolder.getAdapterPosition()).getName();
+
+//            // backup of removed item for undo purpose
+//            final Item deletedItem = cartList.get(viewHolder.getAdapterPosition());
+//            final int deletedIndex = viewHolder.getAdapterPosition();
+
+            // remove the item from recycler view
+            adapter.delete(viewHolder.getAdapterPosition());
+
+            // showing snack bar with Undo option
+//            Snackbar snackbar = Snackbar
+//                    .make(coordinatorLayout, name + " removed from cart!", Snackbar.LENGTH_LONG);
+//            snackbar.setAction("UNDO", new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                    // undo is selected, restore the deleted item
+//                    mAdapter.restoreItem(deletedItem, deletedIndex);
+//                }
+//            });
+//            snackbar.setActionTextColor(Color.YELLOW);
+//            snackbar.show();
+        }
+    }
 }

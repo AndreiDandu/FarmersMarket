@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_row_selector"
+    android:clickable="true">
+    <RelativeLayout
+        android:id="@+id/view_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fa315b">
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@android:drawable/ic_delete" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/delete_icon"
+            android:text="Delete"
+            android:textColor="#fff"
+            android:textSize="13dp" />
+
+    </RelativeLayout>
+    <!-- Thumbnail AdBitmapImage -->
+    <!--<ImageView-->
+        <!--android:id="@+id/thumbnail"-->
+        <!--android:layout_width="80sp"-->
+        <!--android:layout_height="80sp"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--tools:src="@drawable/farmer_market_image"/>-->
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:background="@android:color/white"
+        android:id="@+id/view_foreground">
+        <!--android:paddingLeft="80sp"-->
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+                android:layout_alignParentLeft="true"
+                tools:src="@drawable/farmer_market_image"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/title_desc_layout"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="110dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/textColor"
+                tools:text="Title" />
+
+            <!-- Description -->
+            <TextView
+                android:id="@+id/description_id"
+                android:layout_width="192dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2sp"
+                android:layout_marginTop="1dip"
+                android:textColor="@color/secondaryText"
+                android:textSize="@dimen/rating"
+                tools:text="Lorem ipsum dolor sic amet Lorem ipsum dolor sic amet" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/price_layout"
+            android:layout_width="80dp"
+            android:layout_height="62dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="-280dp"
+            android:layout_toStartOf="@+id/title_desc_layout"
+            android:gravity="end">
+
+
+            <!-- Price -->
+            <TextView
+                android:id="@+id/price_id"
+                android:layout_width="44dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                tools:text="23" />
+
+            <TextView
+                android:id="@+id/price_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/price_id"
+                android:layout_marginRight="2dp"
+                android:text="lei"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="60dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/title_desc_layout"
+            android:layout_alignParentRight="true">
+
+            <TextView
+                android:id="@+id/input_location_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="0dp"
+                android:clickable="true"
+                android:drawableLeft="@drawable/ic_location16dp"
+                android:paddingRight="4sp"
+                android:paddingBottom="4sp"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/genre"
+                tools:text="Buzias" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <!--<TextView-->
+        <!--android:id="@+id/input_location_list"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_marginTop="5sp"-->
+        <!--android:clickable="true"-->
+        <!--android:drawableLeft="@drawable/ic_location16dp"-->
+        <!--android:textColor="@color/textColor"-->
+        <!--android:textSize="@dimen/genre"-->
+        <!--android:paddingBottom="4sp"-->
+        <!--android:paddingRight="4sp"-->
+        <!--tools:text="Buzias" />-->
+
+    <!-- Title of ad -->
+
+    <!-- Location -->
+
+
+
+</FrameLayout>
