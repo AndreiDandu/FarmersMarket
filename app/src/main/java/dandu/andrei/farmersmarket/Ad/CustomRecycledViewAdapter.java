@@ -1,12 +1,10 @@
 package dandu.andrei.farmersmarket.Ad;
 
 import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,14 +106,9 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
             Glide.with(context).load(url).into(holder.imageView);
         }
         String price = context.getResources().getString(R.string.price_text, String.valueOf(ad.getPrice()));
+
         holder.txtInputLocation.setPaintFlags(holder.txtInputLocation.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        //TODO
-        Util.getUserLocation().observe(lifecycleOwner, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String location) {
-                holder.txtInputLocation.setText(location);
-            }
-        });
+        holder.txtInputLocation.setText(ad.getLocation());
         holder.txtTitle.setText(ad.getTitle());
         holder.txtDescription.setText(ad.getDescription());
 
@@ -129,6 +121,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
                 Toast.makeText(context, "Clicked on Location", Toast.LENGTH_LONG).show();
             }
         });
+
     }
 
     @Override
@@ -139,7 +132,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     public void delete(int pos) {
         listWithAds.remove(pos);
         notifyItemRemoved(pos);
-       // notifyDataSetChanged();
+        notifyItemRangeChanged(pos,listWithAds.size());
     }
     @Override
     public Filter getFilter() {

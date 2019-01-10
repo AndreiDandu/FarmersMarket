@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity
     public void setListItems(){
         getAllAds();
         getAd();
-
         recyclerViewList =  findViewById(R.id.list);
         onClickAndLongClickItems();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -128,14 +127,13 @@ public class MainActivity extends AppCompatActivity
                 new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this,MainActivity.this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewList);
         //TODO de verificat ca ii de doua ori
-        adapter.notifyDataSetChanged();//???
+      //  adapter.notifyDataSetChanged();//???
 
 
 
     }
     //TODO dece coboara jos selected din list de intrebat(dece plus lista de poze din adviewActivity)
     protected void onClickAndLongClickItems(){
-
         adapter = new CustomRecycledViewAdapter(adList, this, this, new CustomRecycledViewAdapter.OnItemClickListener() {
             @Override
             public void onLongClick(final Ad ad,final int pos,final View view) {
@@ -153,7 +151,6 @@ public class MainActivity extends AppCompatActivity
                     }
                     listWithViews.add(view);
                 }
-
                 }
         });
     }

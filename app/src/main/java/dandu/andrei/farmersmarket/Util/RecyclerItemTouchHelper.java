@@ -76,21 +76,9 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                     paint.setColor(Color.parseColor("#D32F2F"));
                     RectF background = new RectF((float) itemView.getLeft() + dX / 5, (float) itemView.getTop(), (float) itemView.getLeft(), (float) itemView.getBottom());
                     c.drawRect(background, paint);
-                    icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.fui_ic_phone_white_24dp);
+                    icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.farmer_market_image);
                     RectF icon_dest = new RectF((float) (itemView.getLeft() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getLeft() + dX / 20, (float) itemView.getBottom() - width);
                     c.drawBitmap(icon, null, icon_dest, paint);
-
-
-//                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
-//                    float width = height / 5;
-//                    viewHolder.itemView.setTranslationX(dX / 5);
-//
-//                    paint.setColor(Color.parseColor("#D32F2F"));
-//                    RectF background = new RectF((float) itemView.getRight() + dX / 5, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
-//                    c.drawRect(background, paint);
-//                    icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.farmer_market_image);
-//                    RectF icon_dest = new RectF((float) (itemView.getRight() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getRight() + dX / 20, (float) itemView.getBottom() - width);
-//                    c.drawBitmap(icon, null, icon_dest, paint);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -108,17 +96,6 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                     icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.farmer_market_image);
                     RectF icon_dest = new RectF((float) (itemView.getRight() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getRight() + dX / 20, (float) itemView.getBottom() - width);
                     c.drawBitmap(icon, null, icon_dest, paint);
-//                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
-//                    float width = height / 5;
-//                    viewHolder.itemView.setTranslationX(dX / 5);
-//
-//                    paint.setColor(Color.parseColor("#D32F2F"));
-//                    RectF background = new RectF((float) itemView.getLeft() + dX / 5, (float) itemView.getTop(), (float) itemView.getLeft(), (float) itemView.getBottom());
-//                    c.drawRect(background, paint);
-//                    icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.farmer_market_image);
-//                    RectF icon_dest = new RectF((float) (itemView.getLeft() + dX / 7), (float) itemView.getTop() + width, (float) itemView.getLeft() + dX / 20, (float) itemView.getBottom() - width);
-//                    c.drawBitmap(icon, null, icon_dest, paint);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

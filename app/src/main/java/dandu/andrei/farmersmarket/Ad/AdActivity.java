@@ -2,12 +2,14 @@ package dandu.andrei.farmersmarket.Ad;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,7 +38,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.Util.Util;
 import dandu.andrei.farmersmarket.Validators.TextValidator;
+
 //TODO check for exception
 public class AdActivity extends AppCompatActivity {
     private static final String TAG = AdActivity.class.getSimpleName();
@@ -52,6 +56,7 @@ public class AdActivity extends AppCompatActivity {
     private List<byte[]> listOfBytes = new ArrayList<>();
     FirebaseStorage storage;
     StorageReference storageReference;
+    private String location;
 
     private AdPicsAdapter adapter;
     @Override
@@ -65,8 +70,19 @@ public class AdActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         title.addTextChangedListener(new TextValidator(title,title_layout));
+        getLocation();
 
     }
+
+    private void getLocation() {
+        Util.getUserLocation().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String userLocation) {
+              location = userLocation;
+            }
+        });
+    }
+
     public void setAdapter(){
         RecyclerView recyclerView = findViewById(R.id.ad_activity_recyclerView_id);
         adapter = new AdPicsAdapter(bitmapList,getApplicationContext());
@@ -82,16 +98,15 @@ public class AdActivity extends AppCompatActivity {
     @OnClick(R.id.ad_submitBtn_id)
     protected void addAd() {
         uploadPic();
-        Ad ad = new Ad();
+        final Ad ad = new Ad();
         ad.setTitle(title.getText().toString());
         ad.setDescription(adDescription.getText().toString());
         ad.setPrice(Integer.parseInt(price.getText().toString()));
         ad.setQuantity(Integer.parseInt(quantity.getText().toString()));
-
         if(!uriList.isEmpty()){
             ad.setUriPhoto(uriList);
         }
-
+        ad.setLocation(location);
         Intent i = new Intent(this,MainActivity.class);
         i.putExtra("Ad", ad);
         startActivity(i);

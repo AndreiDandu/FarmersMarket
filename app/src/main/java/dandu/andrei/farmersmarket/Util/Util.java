@@ -7,7 +7,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -31,8 +30,6 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 import dandu.andrei.farmersmarket.Ad.Ad;
-import dandu.andrei.farmersmarket.Main.MainActivity;
-import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Users.User;
 
 // trebuie mail validation
@@ -40,7 +37,6 @@ public class Util extends Activity{
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
     private static FirebaseFirestore fireStoreDB = FirebaseFirestore.getInstance();
     private static FirebaseStorage storage = FirebaseStorage.getInstance();
-    private static String location;
     private static String TAG = Util.class.getSimpleName();
     public Util(){
     }
@@ -86,7 +82,7 @@ public class Util extends Activity{
     public static LiveData<String> getUserLocation() {
         final MutableLiveData<String> location = new MutableLiveData<>();
         DocumentReference userInfo;
-
+        //TODO put location on AD
         userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
         userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -163,7 +159,6 @@ public class Util extends Activity{
             }
         });
     }
-
     //Get uri for glide to load
     public static StorageReference getUrl(String uri){
         return storage.getReferenceFromUrl(uri);
