@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity
                 new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this,MainActivity.this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewList);
         //TODO de verificat ca ii de doua ori
-      //  adapter.notifyDataSetChanged();//???
+       adapter.notifyDataSetChanged();//???
 
 
 
@@ -364,7 +365,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (viewHolder instanceof CustomRecycledViewAdapter.MyViewHolder) {
+          //  Toast.makeText(this , "Direction " + direction + "position"+ position , Toast.LENGTH_LONG).show();
+            if(direction == 4){
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("0765524844"));
+               // startActivity(intent);
+                adapter.notifyItemChanged(position);
 
+            }
+            if(direction == 8){
+                Toast.makeText(this , "Follow user "  + " position"+ position , Toast.LENGTH_LONG).show();
+                adapter.notifyItemChanged(position);
+                //salvat id-ul... la user-ul care trebuie urmarit
+            }
             // get the removed item name to display it in snack bar
             //String name = cartList.get(viewHolder.getAdapterPosition()).getName();
 
