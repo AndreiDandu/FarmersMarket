@@ -30,4 +30,7 @@
     <string name="price">Price</string>
     <string name="quantity">Quantity</string>
     <string name="submit">Submit</string>>
+    <string name="facebook_app_id">2167996916557134</string>
+    <string name="fb_login_protocol_scheme">fb2167996916557134</string>
+
 </resources>

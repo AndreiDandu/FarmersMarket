@@ -55,7 +55,7 @@
         app:layout_constraintVertical_bias="0.081"
         app:srcCompat="@drawable/circle" />
 
-    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
+    <com.facebook.login.widget.LoginButton
         android:id="@+id/sign_in_with_facebook_btn"
         style="@style/FirebaseUI.Button.AccountChooser.FacebookButton"
         android:layout_width="224dp"

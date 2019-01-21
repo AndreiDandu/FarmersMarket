@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "106557124325-2330cbd2kg0bvedgkmkkbj8q93r8n2om.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dandu.andrei.farmersmarket",
+            "certificate_hash": "ef62b7154cd7e7ace4ac00b215862ceeed3e78f5"
+          }
+        },
+        {
           "client_id": "106557124325-cbeh7n3nbvhcdv7ausrr2ev5030m7a3i.apps.googleusercontent.com",
           "client_type": 3
         }

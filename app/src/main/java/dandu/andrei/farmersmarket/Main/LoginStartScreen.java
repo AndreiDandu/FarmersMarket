@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dandu.andrei.farmersmarket.FacebookLogin;
 import dandu.andrei.farmersmarket.HandleLogin.CheckEmailInDataBase;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Util.Util;
@@ -46,7 +47,8 @@ public class LoginStartScreen extends Activity {
     }
     @OnClick(R.id.sign_in_with_facebook_btn)
     public void onClickFacebookButton(){
-        Toast.makeText(this, "Not working momentarily!", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(LoginStartScreen.this,FacebookLogin.class));
+        //Toast.makeText(this, "Not working momentarily!", Toast.LENGTH_SHORT).show();
     }
     //TODO: To be deleted
     @OnClick(R.id.skip_btn_id)

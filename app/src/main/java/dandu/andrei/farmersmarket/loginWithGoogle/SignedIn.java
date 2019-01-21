@@ -40,7 +40,7 @@ public class SignedIn extends AppCompatActivity {
     @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.auth_ui);
+            setContentView(R.layout.login_start_screen);
         mAuth = FirebaseAuth.getInstance();
         mAuthStateListener= new FirebaseAuth.AuthStateListener() {
             @Override
@@ -63,7 +63,7 @@ public class SignedIn extends AppCompatActivity {
         })
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
 
-        Button mGoogleButton = (Button) findViewById(R.id.sign_in);
+        Button mGoogleButton = (Button) findViewById(R.id.sign_in_with_google_btn);
         mGoogleButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
