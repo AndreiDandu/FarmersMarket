@@ -62,6 +62,7 @@ public class LoginWithPasswordAndEmail extends AppCompatActivity {
 
     @OnClick(R.id.btn_signup)
     protected void loginUser() {
+        //TODO check for empty
         String password = inputPassword.getText().toString();
         firebaseAuth.signInWithEmailAndPassword(inputEmail,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override

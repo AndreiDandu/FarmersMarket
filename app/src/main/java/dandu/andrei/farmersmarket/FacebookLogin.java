@@ -35,8 +35,8 @@ public class FacebookLogin extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_start_screen);
-        loginButton = (LoginButton) findViewById(R.id.sign_in_with_facebook_btn);
+        setContentView(R.layout.auth_ui);
+        loginButton = (LoginButton) findViewById(R.id.sign_in_with_facebook_btn1);
 
         mAuth = FirebaseAuth.getInstance();
 

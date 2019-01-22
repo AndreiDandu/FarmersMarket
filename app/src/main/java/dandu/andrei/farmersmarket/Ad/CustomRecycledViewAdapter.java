@@ -4,6 +4,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,8 +36,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     private final OnItemClickListener listener;
     private ListFilter  filter;
     private List<Ad> filterAds;
-
-
+    public ImageView img;
 
     public interface OnItemClickListener {
         void onLongClick(Ad ad, int v, View view);
@@ -53,6 +53,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         TextView txtPrice;
         @BindView(R.id.thumbnail)
         ImageView imageView;
+
        public  RelativeLayout background,foreground;
        //public LinearLayout foreground;
 
@@ -100,6 +101,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         holder.bind(listWithAds.get(position), listener, position, holder.itemView);
 
         List<String> uriPhoto = ad.getUriPhoto();
+        //todo delay mare
         if (!uriPhoto.isEmpty()) {
             StorageReference url = Util.getUrl(uriPhoto.get(0));
 
@@ -121,7 +123,6 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
                 Toast.makeText(context, "Clicked on Location", Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     @Override

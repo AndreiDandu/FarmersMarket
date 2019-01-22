@@ -63,7 +63,8 @@ public class SignInWithUserInfo extends Activity {
     }
     public User getUser(){
         int zipcode= Integer.parseInt(inputZipcode.getText().toString());
-        int phoneNumber = Integer.parseInt(inputPhoneNumber.getText().toString());
+        //TODO make string from phonenumber
+        String phoneNumber = inputPhoneNumber.getText().toString();
         String email = inputEmail.getText().toString();
         String password = inputPassword.getText().toString();
         String fullName = inputName.getText().toString();

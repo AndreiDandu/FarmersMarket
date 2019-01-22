@@ -131,26 +131,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/price_id"
-                android:layout_marginRight="2dp"
+                android:layout_marginRight="3dp"
                 android:text="lei"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="25dp"
             android:layout_below="@id/title_desc_layout"
             android:layout_alignParentRight="true">
 
             <TextView
                 android:id="@+id/input_location_list"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="1dp"
+                android:layout_marginStart="-3dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="0dp"
                 android:clickable="true"

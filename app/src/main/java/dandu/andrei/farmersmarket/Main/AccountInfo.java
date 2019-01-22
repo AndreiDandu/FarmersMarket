@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -75,12 +76,23 @@ public class AccountInfo extends AppCompatActivity {
         ButterKnife.bind(this);
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
         getUserInfo();
     }
-
+    private void getDataFromAccount(){
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if(currentUser.getProviderData().size() > 3 ){
+           String providerId = auth.getCurrentUser().getProviderData().get(1).getProviderId();
+           if(providerId.contains("google")){
+               Uri photoUrl = currentUser.getPhotoUrl();
+               Glide.with(this).load(photoUrl).into(userProfilePictureView);
+           }
+       }
+    }
     private void getUserInfo() {
+
         userInfo = firebaseFirestore.collection("UsersInfo").document(auth.getCurrentUser().getUid());
         userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -99,6 +111,7 @@ public class AccountInfo extends AppCompatActivity {
         });
     }
     private void setUserInfo(User user) {
+
         inputEmail.setText(user.getEmail());
         inputName.setText(user.getFullName());
         inputLocation.setText(user.getLocation());
@@ -115,7 +128,7 @@ public class AccountInfo extends AppCompatActivity {
             userInfo.update("fullName", inputName.getText().toString());
             userInfo.update("location", inputLocation.getText().toString());
             userInfo.update("street", inputStreetName.getText().toString());
-            userInfo.update("zipCode",Integer.parseInt( inputZipcode.getText().toString()));
+            userInfo.update("zipCode", inputZipcode.getText().toString());
             userInfo.update("phoneNumber", Integer.parseInt(inputPhoneNumber.getText().toString()));
             if(isChanged) {
                 userInfo.update("uriPhoto", profilePictureUri);

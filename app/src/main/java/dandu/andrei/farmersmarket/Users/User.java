@@ -7,13 +7,13 @@ public class User {
     private String location;
     private String street;
     private int zipCode;
-    private int phoneNumber;
+    private String phoneNumber;
     private String uriPhoto;
 
     public User() {
     }
 
-    public User( String fullName,String email, String password,int zipCode,int phoneNumber, String street, String location) {
+    public User( String fullName,String email, String password,int zipCode,String phoneNumber, String street, String location) {
 
         this.fullName = fullName;
         this.email = email;
@@ -72,11 +72,11 @@ public class User {
     public void setZipCode(int zipCode) {
         this.zipCode = zipCode;
     }
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
     public String getUriPhoto() {

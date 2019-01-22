@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
@@ -61,6 +62,7 @@ public class Util extends Activity{
         });
     }
     public static void getUserPicture(final Context context,final ImageView img) {
+
        DocumentReference userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
         userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -68,6 +70,13 @@ public class Util extends Activity{
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     User user = documentSnapshot.toObject(User.class);
                      String profileUriPicture = user.getUriPhoto();
+                     if(profileUriPicture == null){
+                       Uri photoUrl = getUserPictureFromProvider();
+                       if(photoUrl != null){
+                           profileUriPicture = photoUrl.toString();
+                       }
+                     }
+                     
                     //ImageView viewById1 = (ImageView) findViewById(R.id.profile_picture_main_activity);
                     Glide.with(context).load(profileUriPicture).into(img);
                 }
@@ -79,6 +88,12 @@ public class Util extends Activity{
             }
         });
     }
+
+    private static Uri getUserPictureFromProvider() {
+     return  auth.getCurrentUser().getPhotoUrl();
+
+    }
+
     public static LiveData<String> getUserLocation() {
         final MutableLiveData<String> location = new MutableLiveData<>();
         DocumentReference userInfo;
