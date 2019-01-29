@@ -39,6 +39,8 @@ public class Util extends Activity{
     private static FirebaseFirestore fireStoreDB = FirebaseFirestore.getInstance();
     private static FirebaseStorage storage = FirebaseStorage.getInstance();
     private static String TAG = Util.class.getSimpleName();
+    private static DocumentReference userInfo;
+    private static User users;
     public Util(){
     }
 
@@ -96,8 +98,7 @@ public class Util extends Activity{
 
     public static LiveData<String> getUserLocation() {
         final MutableLiveData<String> location = new MutableLiveData<>();
-        DocumentReference userInfo;
-        //TODO put location on AD
+
         userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
         userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -114,6 +115,25 @@ public class Util extends Activity{
             }
         });
         return location;
+    }
+    public static LiveData<User> getUser(String uid) {
+        final MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+        userInfo = fireStoreDB.collection("UsersInfo").document(uid);
+        userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    User user = documentSnapshot.toObject(User.class);
+                    userMutableLiveData.setValue(user);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+              //  Toast.makeText(MainActivity.this, "Fail to get User info ", Toast.LENGTH_LONG).show();
+            }
+        });
+        return userMutableLiveData;
     }
     public static void deletePicturesFromAd(Ad ad){
         ArrayList<String> uriPhotos = ad.getUriPhoto();

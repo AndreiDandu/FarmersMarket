@@ -44,6 +44,7 @@ public class LoginWithPasswordAndEmail extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         ButterKnife.bind(this);
         inputEmail = getIntentData();
+        inputPassword.requestFocus();
         inputPassword.addTextChangedListener(new PasswordValidator(inputPassword,inputLayoutPassword));
 
     }
@@ -62,20 +63,21 @@ public class LoginWithPasswordAndEmail extends AppCompatActivity {
 
     @OnClick(R.id.btn_signup)
     protected void loginUser() {
-        //TODO check for empty
-        String password = inputPassword.getText().toString();
-        firebaseAuth.signInWithEmailAndPassword(inputEmail,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(LoginWithPasswordAndEmail.this, "Login with succes", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(LoginWithPasswordAndEmail.this,MainActivity.class));
-                }else{
-                    //set error label no conection with snackbar and wrong password
-                    Toast.makeText(LoginWithPasswordAndEmail.this, "Problems", Toast.LENGTH_SHORT).show();
+        if (inputPassword.getText() != null && !inputPassword.getText().toString().equals("")) {
+            String password = inputPassword.getText().toString();
+            firebaseAuth.signInWithEmailAndPassword(inputEmail, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(LoginWithPasswordAndEmail.this, "Login with success", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginWithPasswordAndEmail.this, MainActivity.class));
+                    } else {
+
+                        Toast.makeText(LoginWithPasswordAndEmail.this, "Error", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
     @OnClick(R.id.btn_reset_password)
     protected void resetPasswordWithEmail(){

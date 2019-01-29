@@ -8,7 +8,7 @@
 
     <!-- Thumbnail AdBitmapImage -->
     <ImageView
-        android:id="@+id/thumbnail"
+        android:id="@+id/follower_picture_id"
         android:layout_width="80sp"
         android:layout_height="80sp"
         android:layout_alignParentLeft="true"
@@ -31,23 +31,33 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/follower_name_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/textColor"
-                tools:text="Title" />
+                tools:text="Nume: Andrei Dandu" />
 
             <!-- Description -->
             <TextView
-                android:id="@+id/description_id"
+                android:id="@+id/follower_phone_number_id"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2sp"
                 android:layout_marginTop="1dip"
                 android:textColor="@color/secondaryText"
                 android:textSize="@dimen/rating"
-                tools:text="Lorem ipsum dolor sic amet Lorem ipsum dolor sic amet" />
+                tools:text="Telefon : 0765524844" />
+
+            <TextView
+                android:id="@+id/follower_uid_id"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2sp"
+                android:layout_marginTop="1dip"
+                android:textColor="@color/secondaryText"
+                android:textSize="@dimen/rating"
+                android:visibility="gone"
+                tools:text="Telefon : 0765524844" />
 
         </LinearLayout>
 
@@ -57,30 +67,12 @@
             android:layout_weight="75"
             android:gravity="end"
             android:orientation="vertical">
-
-
-            <!-- Price -->
-            <TextView
-                android:id="@+id/price_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                tools:text="23" />
-
-            <TextView
-                android:id="@+id/price_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="lei"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                tools:text="lei" />
-
         </LinearLayout>
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/input_location_list"
+        android:id="@+id/follower_location_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -93,10 +85,4 @@
         android:paddingBottom="4sp"
         android:paddingRight="4sp"
         tools:text="Buzias" />
-
-    <!-- Title of ad -->
-
-    <!-- Location -->
-
-
 </RelativeLayout>

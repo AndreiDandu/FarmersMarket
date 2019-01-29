@@ -4,7 +4,6 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,7 +26,7 @@ import butterknife.ButterKnife;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Util.ListFilter;
 import dandu.andrei.farmersmarket.Util.Util;
-import dandu.andrei.farmersmarket.loginWithGoogle.MapsActivity;
+import dandu.andrei.farmersmarket.Main.MapsActivity;
 
 public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycledViewAdapter.MyViewHolder> implements Filterable {
     public List<Ad> listWithAds;

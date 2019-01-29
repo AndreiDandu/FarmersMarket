@@ -58,8 +58,8 @@
     <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
         android:id="@+id/sign_in_with_facebook_btn"
         style="@style/FirebaseUI.Button.AccountChooser.FacebookButton"
-        android:layout_width="224dp"
-        android:layout_height="53dp"
+        android:layout_width="225dp"
+        android:layout_height="43dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -79,7 +79,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:visibility="invisible"
         android:text="skiptToMain"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

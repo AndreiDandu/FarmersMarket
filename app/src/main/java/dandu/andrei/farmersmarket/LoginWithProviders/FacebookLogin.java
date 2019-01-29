@@ -1,4 +1,4 @@
-package dandu.andrei.farmersmarket;
+package dandu.andrei.farmersmarket.LoginWithProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import dandu.andrei.farmersmarket.Main.MainActivity;
+import dandu.andrei.farmersmarket.R;
 
 public class FacebookLogin extends AppCompatActivity {
 
@@ -42,6 +43,7 @@ public class FacebookLogin extends AppCompatActivity {
 
         mCallbackManager = CallbackManager.Factory.create();
         loginButton.setReadPermissions("email");
+
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -64,8 +66,6 @@ public class FacebookLogin extends AppCompatActivity {
         });
 
         mAuthListener = new FirebaseAuth.AuthStateListener(){
-
-
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
@@ -86,10 +86,11 @@ public class FacebookLogin extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+
 
         // Pass the activity result back to the Facebook SDK
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void handleFacebookAccessToken(AccessToken token) {

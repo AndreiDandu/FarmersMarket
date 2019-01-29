@@ -1,5 +1,8 @@
 package dandu.andrei.farmersmarket.Users;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
     private String email;
     private String fullName;
@@ -9,6 +12,8 @@ public class User {
     private int zipCode;
     private String phoneNumber;
     private String uriPhoto;
+    private Map<String,Boolean> followers = new HashMap<>();
+    private String uid;
 
     public User() {
     }
@@ -22,7 +27,19 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.street = street;
         this.location = location;
+    }
+    public void setUid(String uid){
+        this.uid = uid;
+    }
+    public String getUid(){
+        return uid;
+    }
+    public Map<String, Boolean> getFollowers() {
+        return followers;
+    }
 
+    public void setFollowers(Map<String, Boolean> followers) {
+        this.followers = followers;
     }
 
     public String getEmail() {

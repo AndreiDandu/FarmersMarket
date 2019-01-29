@@ -99,10 +99,10 @@ public class AdActivity extends AppCompatActivity {
     protected void addAd() {
         uploadPic();
         final Ad ad = new Ad();
-        ad.setTitle(title.getText().toString());
-        ad.setDescription(adDescription.getText().toString());
-        ad.setPrice(Integer.parseInt(price.getText().toString()));
-        ad.setQuantity(Integer.parseInt(quantity.getText().toString()));
+        ad.setTitle(title.getText() != null ? title.getText().toString() : "");
+        ad.setDescription(adDescription.getText() != null ? adDescription.getText().toString() : "");
+        ad.setPrice(Integer.parseInt(!price.getText().toString().equals("") ? price.getText().toString() : "0"));
+        ad.setQuantity(Integer.parseInt(!quantity.getText().toString().equals("") ? quantity.getText().toString() : "0"));
         if(!uriList.isEmpty()){
             ad.setUriPhoto(uriList);
         }

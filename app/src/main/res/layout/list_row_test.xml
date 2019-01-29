@@ -74,7 +74,7 @@
                 android:layout_width="80sp"
                 android:layout_height="80sp"
                 android:layout_alignParentLeft="true"
-                tools:src="@drawable/farmer_market_image"/>
+                tools:src="@drawable/farmer_market_image2"/>
         </LinearLayout>
 
         <LinearLayout

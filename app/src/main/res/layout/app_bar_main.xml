@@ -17,6 +17,17 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <TextView
+            android:id="@+id/tv_nav_drawer_count"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="-45dp"
+            android:background="@drawable/menu_text_bg"
+            android:gravity="center"
+            android:text="10"
+            android:textColor="@android:color/white"
+            android:textSize="8dp"/>
 
     </android.support.design.widget.AppBarLayout>
 

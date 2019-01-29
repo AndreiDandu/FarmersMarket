@@ -1,4 +1,4 @@
-package dandu.andrei.farmersmarket.loginWithGoogle;
+package dandu.andrei.farmersmarket.Main;
 
 import android.location.Address;
 import android.location.Geocoder;

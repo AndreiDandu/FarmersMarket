@@ -17,11 +17,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dandu.andrei.farmersmarket.FacebookLogin;
+import dandu.andrei.farmersmarket.LoginWithProviders.FacebookLogin;
 import dandu.andrei.farmersmarket.HandleLogin.CheckEmailInDataBase;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Util.Util;
-import dandu.andrei.farmersmarket.loginWithGoogle.SignedIn;
+import dandu.andrei.farmersmarket.LoginWithProviders.SignedIn;
 
 public class LoginStartScreen extends Activity {
    FirebaseAuth firebaseAuth;
@@ -34,7 +34,6 @@ public class LoginStartScreen extends Activity {
         ButterKnife.bind(LoginStartScreen.this);
         firebaseAuth = FirebaseAuth.getInstance();
         constraintLayout = findViewById(R.id.constraint_layout_id);
-
     }
     @OnClick(R.id.sign_in_with_email_btn)
     public void onClickEmailButton(){

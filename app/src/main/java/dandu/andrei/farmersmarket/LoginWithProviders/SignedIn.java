@@ -1,4 +1,4 @@
-package dandu.andrei.farmersmarket.loginWithGoogle;
+package dandu.andrei.farmersmarket.LoginWithProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
