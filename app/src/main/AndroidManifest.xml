@@ -94,6 +94,8 @@
         <activity android:name=".LoginWithProviders.FacebookLogin" />
         <activity android:name=".FollowersAds.FollowersMain" />
         <activity android:name=".FollowersAds.FollowersAds" />
+        <activity android:name=".Ad.AdSimpleView"
+            android:windowSoftInputMode="stateHidden"/>
 
         <service
             android:name=".Util.MyFirebaseMessagingService">

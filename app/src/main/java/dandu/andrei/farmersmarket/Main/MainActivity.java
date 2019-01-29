@@ -50,6 +50,7 @@ import java.util.Map;
 
 import dandu.andrei.farmersmarket.Ad.Ad;
 import dandu.andrei.farmersmarket.Ad.AdActivity;
+import dandu.andrei.farmersmarket.Ad.AdSimpleView;
 import dandu.andrei.farmersmarket.Ad.CustomRecycledViewAdapter;
 import dandu.andrei.farmersmarket.FollowersAds.FollowersMain;
 import dandu.andrei.farmersmarket.Util.MyFirebaseMessagingService;
@@ -163,6 +164,16 @@ public class MainActivity extends AppCompatActivity
                         mapWithAdAndPos.put(ad, pos);
                     }
                     listWithViews.add(view);
+                }
+            }
+
+            @Override
+            public void onClickListener(Ad ad, int v, View view) {
+                if (!ad.getUid().equals(auth.getCurrentUser().getUid())) {
+                    Toast.makeText(MainActivity.this,"Clicked on other user ads",Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(MainActivity.this , AdSimpleView.class);
+                    intent.putExtra("Ad",ad);
+                    startActivity(intent);
                 }
             }
         });
@@ -288,11 +299,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_my_ads) {
             getMyAds();
         } else if (id == R.id.nav_following_ad) {
-            Intent intent = new Intent(MainActivity.this,FollowersMain.class);
-            intent.putExtra("uid",auth.getCurrentUser().getUid());
-            startActivity(intent);
+            startActivityToFollowersMain();
         } else if (id == R.id.nav_account_info) {
-
+            //TODO new activity cu datele uitlizatorului plus cate anunturi are puse
+        } else if (id == R.id.nav_other_ad) {
+            getOthersAds();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -302,6 +313,12 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startActivityToFollowersMain() {
+        Intent intent = new Intent(MainActivity.this,FollowersMain.class);
+        intent.putExtra("uid",auth.getCurrentUser().getUid());
+        startActivity(intent);
     }
 
     public void getMyAds() {
@@ -327,7 +344,29 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+    public void getOthersAds() {
+        adList.clear();
+        CollectionReference ads = fireStoreDB.collection("Ads");
+        ads.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    Ad ad = documentSnapshot.toObject(Ad.class);
+                    if (!ad.getUid().equals(auth.getCurrentUser().getUid())) {
+
+                        adList.add(ad);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Fail to read ads from DB", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

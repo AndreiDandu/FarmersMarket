@@ -39,6 +39,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     public interface OnItemClickListener {
         void onLongClick(Ad ad, int v, View view);
+        void onClickListener(Ad ad, int v, View view);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -71,6 +72,12 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
                 public boolean onLongClick(View v) {
                     listener.onLongClick(ad, pos, view);
                     return false;
+                }
+            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onClickListener(ad,pos,view);
                 }
             });
         }

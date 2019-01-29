@@ -97,6 +97,11 @@ public class FollowersAds extends AppCompatActivity  {
 //                    listWithViews.add(view);
 //                }
             }
+
+            @Override
+            public void onClickListener(Ad ad, int v, View view) {
+
+            }
         });
     }
 

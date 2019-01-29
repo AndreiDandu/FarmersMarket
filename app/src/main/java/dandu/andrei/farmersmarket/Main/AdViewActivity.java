@@ -54,7 +54,7 @@ public class AdViewActivity extends Activity {
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         ad = getDataFromMainActivity();
-        setEditTextNonEditable();
+       // setEditTextNonEditable();
         setValuesFromAd();
         //add textWatcher on EditText
         //TODO add delete and ad picture button function
@@ -70,14 +70,13 @@ public class AdViewActivity extends Activity {
     }
 
     private void setValuesFromAd() {
-
         if (ad != null) {
             title.setText(ad.getTitle());
             adDescription.setText(ad.getDescription());
             quantity.setText(String.valueOf(ad.getQuantity()));
             price.setText(String.valueOf(ad.getPrice()));
             ArrayList<String> uriPhotos = ad.getUriPhoto();
-            for (String uriPhoto:uriPhotos) {
+            for (String uriPhoto : uriPhotos) {
                 AdBitmapImage img = new AdBitmapImage(uriPhoto);
                 bitmapList.add(img);
             }
@@ -102,6 +101,7 @@ public class AdViewActivity extends Activity {
 
         return  adFromMain;
     }
+
     @OnClick(R.id.ad_view_submit_btn_id)
     public void updateAdToFireStore() {
         CollectionReference ads = firebaseFirestore.collection("Ads");
@@ -132,7 +132,5 @@ public class AdViewActivity extends Activity {
                 Toast.makeText(AdViewActivity.this,"Error",Toast.LENGTH_LONG).show();
             }
         });
-
-
     }
 }
