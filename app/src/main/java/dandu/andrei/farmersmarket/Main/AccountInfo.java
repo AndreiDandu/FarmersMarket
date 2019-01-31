@@ -116,7 +116,7 @@ public class AccountInfo extends AppCompatActivity {
         inputName.setText(user.getFullName());
         inputLocation.setText(user.getLocation());
         inputStreetName.setText(user.getStreet());
-        inputPhoneNumber.setText(String.valueOf(user.getPhoneNumber()));
+        inputPhoneNumber.setText(user.getPhoneNumber());
         inputZipcode.setText(String.valueOf(user.getZipCode()));
         Glide.with(this).load(user.getUriPhoto()).into(userProfilePictureView);
 
@@ -128,8 +128,8 @@ public class AccountInfo extends AppCompatActivity {
             userInfo.update("fullName", inputName.getText().toString());
             userInfo.update("location", inputLocation.getText().toString());
             userInfo.update("street", inputStreetName.getText().toString());
-            userInfo.update("zipCode", inputZipcode.getText().toString());
-            userInfo.update("phoneNumber", Integer.parseInt(inputPhoneNumber.getText().toString()));
+            userInfo.update("zipCode",Integer.parseInt( inputZipcode.getText().toString()));
+            userInfo.update("phoneNumber", inputPhoneNumber.getText().toString());
             if(isChanged) {
                 userInfo.update("uriPhoto", profilePictureUri);
                 deletePreviousProfilePicture();

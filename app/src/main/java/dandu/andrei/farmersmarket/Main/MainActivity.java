@@ -1,9 +1,13 @@
 package dandu.andrei.farmersmarket.Main;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +58,7 @@ import dandu.andrei.farmersmarket.Ad.AdActivity;
 import dandu.andrei.farmersmarket.Ad.AdSimpleView;
 import dandu.andrei.farmersmarket.Ad.CustomRecycledViewAdapter;
 import dandu.andrei.farmersmarket.FollowersAds.FollowersMain;
+import dandu.andrei.farmersmarket.Util.ExpiringAds;
 import dandu.andrei.farmersmarket.Util.MyFirebaseMessagingService;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Util.RecyclerItemTouchHelper;
@@ -73,6 +79,7 @@ public class MainActivity extends AppCompatActivity
     private Map<Ad, Integer> mapWithAdAndPos = new HashMap<>();
     private List<View> listWithViews = new ArrayList<>();
     private SearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +127,7 @@ public class MainActivity extends AppCompatActivity
                         MyFirebaseMessagingService.sendRegistrationToServer(token);
                     }
                 });
+
     }
 
     public void setListItems() {
@@ -148,14 +156,15 @@ public class MainActivity extends AppCompatActivity
 
 
     protected void onClickAndLongClickItems() {
-        adapter = new CustomRecycledViewAdapter(adList, this, this, new CustomRecycledViewAdapter.OnItemClickListener() {
+        adapter = new CustomRecycledViewAdapter(adList, this, auth.getCurrentUser().getUid(), new CustomRecycledViewAdapter.OnItemClickListener() {
             @Override
-            public void onLongClick(final Ad ad, final int pos, final View view) {
+            public void onLongClick(final Ad ad, final int pos, final View view, RelativeLayout relativeLayout) {
                 if (ad.getUid().equals(auth.getCurrentUser().getUid())) {
                     if (actionMode == null) {
                         actionMode = startActionMode(modelCallBack);
                     }
                     view.setSelected(true);
+                    relativeLayout.setBackgroundColor(Color.GRAY);
                     ad.setSelected(true);
                     if (mapWithAdAndPos.containsKey(ad)) {
                         view.setSelected(false);
@@ -189,6 +198,9 @@ public class MainActivity extends AppCompatActivity
         return ad;
     }
 
+
+
+
     public void getAllAds() {
         adList.clear();
         CollectionReference ads = fireStoreDB.collection("Ads");
@@ -201,8 +213,10 @@ public class MainActivity extends AppCompatActivity
                     ad.setId(documentSnapshot.getId());
                     adList.add(ad);
                 }
-                //TODO
+
                 adapter.notifyDataSetChanged();
+                ExpiringAds.getExpiringAds(adList);
+                ExpiringAds.getAlertDialog(MainActivity.this);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -336,6 +350,8 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 adapter.notifyDataSetChanged();
+                ExpiringAds.getExpiringAds(adList);
+                ExpiringAds.getAlertDialog(MainActivity.this);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

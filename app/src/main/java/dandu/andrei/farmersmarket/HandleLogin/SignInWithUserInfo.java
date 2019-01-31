@@ -76,13 +76,14 @@ public class SignInWithUserInfo extends Activity {
         return user;
     }
     public void addUser() {
+        //utilizatorul cu informatiile personale
         User user = getUser();
         String uid = firebaseAuth.getCurrentUser().getUid();
-
+        //adaugarea utilizatorului in baza de date impreuna cu un id unic generate de Firebase
         firebaseFirestore.collection("UsersInfo").document(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(SignInWithUserInfo.this, "User save with succes in DB", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInWithUserInfo.this, "User save with success in DB", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

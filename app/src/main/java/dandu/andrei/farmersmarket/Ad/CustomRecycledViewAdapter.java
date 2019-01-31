@@ -3,8 +3,10 @@ package dandu.andrei.farmersmarket.Ad;
 import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.Util.ExpiringAds;
 import dandu.andrei.farmersmarket.Util.ListFilter;
 import dandu.andrei.farmersmarket.Util.Util;
 import dandu.andrei.farmersmarket.Main.MapsActivity;
@@ -31,14 +34,14 @@ import dandu.andrei.farmersmarket.Main.MapsActivity;
 public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycledViewAdapter.MyViewHolder> implements Filterable {
     public List<Ad> listWithAds;
     private Context context;
-    private final LifecycleOwner lifecycleOwner;
+    private String uid;
     private final OnItemClickListener listener;
     private ListFilter  filter;
     private List<Ad> filterAds;
     public ImageView img;
 
     public interface OnItemClickListener {
-        void onLongClick(Ad ad, int v, View view);
+        void onLongClick(Ad ad, int v, View view,RelativeLayout foreground);
         void onClickListener(Ad ad, int v, View view);
     }
 
@@ -53,6 +56,8 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         TextView txtPrice;
         @BindView(R.id.thumbnail)
         ImageView imageView;
+        @BindView(R.id.expiration_field_id)
+        TextView expiration;
 
        public  RelativeLayout background,foreground;
        //public LinearLayout foreground;
@@ -61,16 +66,17 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
             super(itemView);
             background = itemView.findViewById(R.id.view_background);
             foreground = itemView.findViewById(R.id.view_foreground);
+
             ButterKnife.bind(this, itemView);
 
         }
 
-        public void bind(final Ad ad, final OnItemClickListener listener, final int pos, final View view) {
+        public void bind(final Ad ad, final OnItemClickListener listener, final int pos, final View view, final RelativeLayout foreground) {
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    listener.onLongClick(ad, pos, view);
+                    listener.onLongClick(ad, pos, view,foreground);
                     return false;
                 }
             });
@@ -83,10 +89,10 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         }
     }
 
-    public CustomRecycledViewAdapter(List<Ad> listWithAds, Context context, LifecycleOwner lifecycleOwner, OnItemClickListener listener) {
+    public CustomRecycledViewAdapter(List<Ad> listWithAds, Context context,String uid, OnItemClickListener listener) {
         this.listWithAds = listWithAds;
         this.context = context;
-        this.lifecycleOwner = lifecycleOwner;
+        this.uid = uid;
         this.listener = listener;
         this.filterAds = listWithAds;
 
@@ -104,8 +110,8 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         final Ad ad = listWithAds.get(position);
-        holder.bind(listWithAds.get(position), listener, position, holder.itemView);
-        Util.getAdExpiringDate(ad);
+       // holder.setIsRecyclable(false);
+        holder.bind(listWithAds.get(position), listener, position, holder.itemView,holder.foreground);
         List<String> uriPhoto = ad.getUriPhoto();
         //todo delay mare
         if (!uriPhoto.isEmpty()) {
@@ -119,7 +125,14 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         holder.txtInputLocation.setText(ad.getLocation());
         holder.txtTitle.setText(ad.getTitle());
         holder.txtDescription.setText(ad.getDescription());
-
+        int i = setExp(ad);
+        if(i != -1) {
+            if (i == 0) {
+                holder.expiration.setText("Anuntul expira astazi");
+            } else {
+                holder.expiration.setText("Anuntul expira in " + i + " zile");
+            }
+        }
         holder.txtPrice.setText(price);
         holder.itemView.setTag(ad.getId());
         holder.txtInputLocation.setOnClickListener(new View.OnClickListener() {
@@ -149,5 +162,19 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         return  filter;
     }
 
-
+    public int setExp(Ad ad) {
+        if (ad.getUid().equals(uid)) {
+            int adExpiringDate = ExpiringAds.getAdExpiringDate(ad);
+            if (adExpiringDate == 2) {
+                return 2;
+            }
+            if (adExpiringDate == 1) {
+                return 1;
+            }
+            if (adExpiringDate == 0) {
+                return 0;
+            }
+        }
+        return -1;
+    }
 }

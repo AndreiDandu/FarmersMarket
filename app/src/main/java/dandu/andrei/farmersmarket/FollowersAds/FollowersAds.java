@@ -10,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -79,9 +80,9 @@ public class FollowersAds extends AppCompatActivity  {
     }
 
     protected void onClickAndLongClickItems() {
-        adapter = new CustomRecycledViewAdapter(adList, this, this, new CustomRecycledViewAdapter.OnItemClickListener() {
+        adapter = new CustomRecycledViewAdapter(adList, this, uid, new CustomRecycledViewAdapter.OnItemClickListener() {
             @Override
-            public void onLongClick(final Ad ad, final int pos, final View view) {
+            public void onLongClick(final Ad ad, final int pos, final View view, RelativeLayout relativeLayout) {
 //                if (ad.getUid().equals(auth.getCurrentUser().getUid())) {
 //                    if (actionMode == null) {
 //                        actionMode = startActionMode(modelCallBack);

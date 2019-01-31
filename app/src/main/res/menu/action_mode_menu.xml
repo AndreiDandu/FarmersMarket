@@ -9,4 +9,8 @@
     <item android:id="@+id/delete"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="Delete"/>
+
+    <item android:id="@+id/reactualizare"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:title="Reactualizare"/>
 </menu>
