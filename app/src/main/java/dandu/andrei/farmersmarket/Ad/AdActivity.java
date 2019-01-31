@@ -23,13 +23,17 @@ import com.fxn.pix.Pix;
 import com.fxn.utility.PermUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,6 +61,7 @@ public class AdActivity extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
     private String location;
+    private FirebaseFirestore firestore;
 
     private AdPicsAdapter adapter;
     @Override
@@ -103,9 +108,13 @@ public class AdActivity extends AppCompatActivity {
         ad.setDescription(adDescription.getText() != null ? adDescription.getText().toString() : "");
         ad.setPrice(Integer.parseInt(!price.getText().toString().equals("") ? price.getText().toString() : "0"));
         ad.setQuantity(Integer.parseInt(!quantity.getText().toString().equals("") ? quantity.getText().toString() : "0"));
+        DateFormat ISO_8601_FORMAT = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+        String now = ISO_8601_FORMAT.format(new Date());
+        ad.setTimestamp(now);
         if(!uriList.isEmpty()){
             ad.setUriPhoto(uriList);
         }
+
         ad.setLocation(location);
         Intent i = new Intent(this,MainActivity.class);
         i.putExtra("Ad", ad);

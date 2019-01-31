@@ -17,6 +17,10 @@ public class Ad implements Parcelable {
     private boolean isSelected;
     private ArrayList<String> uriPhoto =  new ArrayList<>();
     private String location;
+
+
+
+    private String timestamp;
     public Ad(){}
 
     public Ad(String title, String description, int price, int quantity) {
@@ -24,6 +28,13 @@ public class Ad implements Parcelable {
         this.description = description;
         this.price = price;
         this.quantity = quantity;
+    }
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
     public String getLocation() {
         return location;
@@ -109,6 +120,8 @@ public class Ad implements Parcelable {
         quantity = in.readInt();
         price =in.readInt();
         location = in.readString();
+        timestamp=in.readString();
+
     }
 
     @Override
@@ -120,6 +133,7 @@ public class Ad implements Parcelable {
         dest.writeInt(quantity);
         dest.writeInt(price);
         dest.writeString(location);
+        dest.writeString(timestamp);
     }
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
 

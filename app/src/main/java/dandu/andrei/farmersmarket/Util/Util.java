@@ -28,7 +28,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import dandu.andrei.farmersmarket.Ad.Ad;
 import dandu.andrei.farmersmarket.Users.User;
@@ -197,5 +202,22 @@ public class Util extends Activity{
     //Get uri for glide to load
     public static StorageReference getUrl(String uri){
         return storage.getReferenceFromUrl(uri);
+    }
+
+    public static void getAdExpiringDate(Ad ad){
+        Date parse = null;
+        String timestamp = ad.getTimestamp();
+        DateFormat dateInstance = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+        try {
+             parse = dateInstance.parse(timestamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(parse);
+        c.add(Calendar.DATE,30);
+        Date dateNow = new Date();
+        dateNow.compareTo(c.getTime());
+        
     }
 }

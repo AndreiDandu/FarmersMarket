@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class AdSimpleView extends AppCompatActivity {
     @BindView(R.id.ad_description_id_simple) protected EditText adDescription;
     @BindView(R.id.ad_quantity_id_simple) protected EditText quantity;
     @BindView(R.id.ad_price_id_simple) protected EditText price;
+    @BindView(R.id.ad_view_date) protected TextView date;
 
     protected List<AdBitmapImage> bitmapList = new ArrayList<>();
     protected AdPicsAdapter adapter;
@@ -48,6 +50,7 @@ public class AdSimpleView extends AppCompatActivity {
             adDescription.setText(dataFromMainActivity.getDescription());
             quantity.setText(String.valueOf(dataFromMainActivity.getQuantity()));
             price.setText(String.valueOf(dataFromMainActivity.getPrice()));
+            date.setText("Adaugat in data de: \n" + dataFromMainActivity.getTimestamp());
             ArrayList<String> uriPhotos = dataFromMainActivity.getUriPhoto();
             for (String uriPhoto : uriPhotos) {
                 AdBitmapImage img = new AdBitmapImage(uriPhoto);

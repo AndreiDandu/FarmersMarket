@@ -105,7 +105,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         final Ad ad = listWithAds.get(position);
         holder.bind(listWithAds.get(position), listener, position, holder.itemView);
-
+        Util.getAdExpiringDate(ad);
         List<String> uriPhoto = ad.getUriPhoto();
         //todo delay mare
         if (!uriPhoto.isEmpty()) {
