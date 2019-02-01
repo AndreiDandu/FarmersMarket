@@ -17,10 +17,8 @@ public class Ad implements Parcelable {
     private boolean isSelected;
     private ArrayList<String> uriPhoto =  new ArrayList<>();
     private String location;
-
-
-
     private String timestamp;
+
     public Ad(){}
 
     public Ad(String title, String description, int price, int quantity) {

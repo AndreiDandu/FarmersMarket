@@ -1,13 +1,11 @@
 package dandu.andrei.farmersmarket.Main;
 
-import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -41,6 +39,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -58,10 +57,11 @@ import dandu.andrei.farmersmarket.Ad.AdActivity;
 import dandu.andrei.farmersmarket.Ad.AdSimpleView;
 import dandu.andrei.farmersmarket.Ad.CustomRecycledViewAdapter;
 import dandu.andrei.farmersmarket.FollowersAds.FollowersMain;
+import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Util.ExpiringAds;
 import dandu.andrei.farmersmarket.Util.MyFirebaseMessagingService;
-import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Util.RecyclerItemTouchHelper;
+import dandu.andrei.farmersmarket.Util.SharedPref;
 import dandu.andrei.farmersmarket.Util.Util;
 
 
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+
     private FirebaseAuth auth;
     private FirebaseFirestore fireStoreDB;
     private ArrayList<Ad> adList = new ArrayList<>();
@@ -79,6 +80,8 @@ public class MainActivity extends AppCompatActivity
     private Map<Ad, Integer> mapWithAdAndPos = new HashMap<>();
     private List<View> listWithViews = new ArrayList<>();
     private SearchView searchView;
+    private SharedPreferences preferences;
+    private SharedPref sh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +130,9 @@ public class MainActivity extends AppCompatActivity
                         MyFirebaseMessagingService.sendRegistrationToServer(token);
                     }
                 });
+        preferences = this.getPreferences(Context.MODE_PRIVATE);
+        sh = new SharedPref(preferences);
+
 
     }
 
@@ -148,7 +154,6 @@ public class MainActivity extends AppCompatActivity
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
                 new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this, MainActivity.this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewList);
-        //TODO de verificat ca ii de doua ori
         adapter.notifyDataSetChanged();
 
 
@@ -163,25 +168,24 @@ public class MainActivity extends AppCompatActivity
                     if (actionMode == null) {
                         actionMode = startActionMode(modelCallBack);
                     }
-                    view.setSelected(true);
                     relativeLayout.setBackgroundColor(Color.GRAY);
                     ad.setSelected(true);
                     if (mapWithAdAndPos.containsKey(ad)) {
-                        view.setSelected(false);
+                        relativeLayout.setBackgroundColor(Color.WHITE);
                         mapWithAdAndPos.remove(ad);
                     } else {
                         mapWithAdAndPos.put(ad, pos);
                     }
-                    listWithViews.add(view);
+                    listWithViews.add(relativeLayout);
                 }
             }
 
             @Override
             public void onClickListener(Ad ad, int v, View view) {
                 if (!ad.getUid().equals(auth.getCurrentUser().getUid())) {
-                    Toast.makeText(MainActivity.this,"Clicked on other user ads",Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(MainActivity.this , AdSimpleView.class);
-                    intent.putExtra("Ad",ad);
+                    Toast.makeText(MainActivity.this, "Clicked on other user ads", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(MainActivity.this, AdSimpleView.class);
+                    intent.putExtra("Ad", ad);
                     startActivity(intent);
                 }
             }
@@ -199,8 +203,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-
     public void getAllAds() {
         adList.clear();
         CollectionReference ads = fireStoreDB.collection("Ads");
@@ -209,15 +211,17 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
                     Ad ad = documentSnapshot.toObject(Ad.class);
                     ad.setId(documentSnapshot.getId());
                     adList.add(ad);
                 }
 
                 adapter.notifyDataSetChanged();
+                if (sh.showMessageOnceDay()) {
                 ExpiringAds.getExpiringAds(adList);
                 ExpiringAds.getAlertDialog(MainActivity.this);
-            }
+            }}
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -236,9 +240,11 @@ public class MainActivity extends AppCompatActivity
         item.setActionView(R.layout.menu_dot);
         updateCounter(34);
     }
+
     private void updateCounter(int count) {
         ((TextView) findViewById(R.id.tv_nav_drawer_count)).setText("23");
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -330,8 +336,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startActivityToFollowersMain() {
-        Intent intent = new Intent(MainActivity.this,FollowersMain.class);
-        intent.putExtra("uid",auth.getCurrentUser().getUid());
+        Intent intent = new Intent(MainActivity.this, FollowersMain.class);
+        intent.putExtra("uid", auth.getCurrentUser().getUid());
         startActivity(intent);
     }
 
@@ -350,9 +356,12 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 adapter.notifyDataSetChanged();
-                ExpiringAds.getExpiringAds(adList);
-                ExpiringAds.getAlertDialog(MainActivity.this);
+                if (sh.showMessageOnceDay()) {
+                    ExpiringAds.getExpiringAds(adList);
+                    ExpiringAds.getAlertDialog(MainActivity.this);
+                }
             }
+
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -360,6 +369,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
     public void getOthersAds() {
         adList.clear();
         CollectionReference ads = fireStoreDB.collection("Ads");
@@ -383,6 +393,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -411,7 +422,9 @@ public class MainActivity extends AppCompatActivity
                         Util.deleteAd(adAndPosition.getKey());
                         Util.deletePicturesFromAd(adAndPosition.getKey());
                         adapter.delete(adAndPosition.getValue());
-                        // modelCallBack.onDestroyActionMode(mode);
+                        if (actionMode != null) {
+                            actionMode.finish();
+                        }
                     }
 
                     break;
@@ -424,47 +437,81 @@ public class MainActivity extends AppCompatActivity
                         startActivity(intent);
                     }
                     break;
+                case R.id.reactualizare:
+                    if (!mapWithAdAndPos.isEmpty() && mapWithAdAndPos.size() < 2) {
+                        for (Map.Entry<Ad, Integer> adAndPosition : mapWithAdAndPos.entrySet()) {
+                            final Ad key = adAndPosition.getKey();
+                            CollectionReference ads = fireStoreDB.collection("Ads");
+                            ads.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Ad adFromFireStore = document.toObject(Ad.class);
+                                            if (adFromFireStore.getTitle().equals(key.getTitle())) {
+                                                DocumentReference docRef = fireStoreDB.collection("Ads").document(document.getId());
+
+                                                docRef.update("timestamp",Util.getTimeStamp());
+
+                                            }
+                                        }
+                                    }
+                                    if(actionMode != null){
+                                        actionMode.finish();
+                                    }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                               Log.d(TAG,"Error on timestamp actualization");
+                                }
+                            });
+
+
+                        }
+
+                    }
+                    break;
             }
             return false;
         }
+            @Override
+            public void onDestroyActionMode (ActionMode mode){
+                actionMode = null;
+                if (!listWithViews.isEmpty()) {
+                    for (View view : listWithViews) {
+                        view.setBackgroundColor(Color.WHITE);
+                    }
+                }
+                mapWithAdAndPos.clear();
+                Log.d(TAG, "Action mode destroyed");
+            }
+        }
+
+        ;
 
         @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            actionMode = null;
-            if (!listWithViews.isEmpty()) {
-                for (View view : listWithViews) {
-                    view.setSelected(false);
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+            if (viewHolder instanceof CustomRecycledViewAdapter.MyViewHolder) {
+                if (direction == 4) {
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("0765524844"));
+                    startActivity(intent);
+                    adapter.notifyItemChanged(position);
+
                 }
-            }
-            mapWithAdAndPos.clear();
-            Log.d(TAG, "Action mode destroyed");
-        }
-    };
-
-    @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if (viewHolder instanceof CustomRecycledViewAdapter.MyViewHolder) {
-            if (direction == 4) {
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("0765524844"));
-                // startActivity(intent);
-                adapter.notifyItemChanged(position);
-
-            }
-            if (direction == 8) {
-                Toast.makeText(this, "Follow user " + " position" + position, Toast.LENGTH_LONG).show();
-                String provider = adList.get(position).getUid();
-                String currentUser = auth.getCurrentUser().getUid();
-                if (!currentUser.equals(provider)) {
-                    fireStoreDB.collection("UsersInfo").document(currentUser).update("followers." + provider, true);
-                    //createFollowedUser();
+                if (direction == 8) {
+                    Toast.makeText(this, "Follow user " + " position" + position, Toast.LENGTH_LONG).show();
+                    String provider = adList.get(position).getUid();
+                    String currentUser = auth.getCurrentUser().getUid();
+                    if (!currentUser.equals(provider)) {
+                        fireStoreDB.collection("UsersInfo").document(currentUser).update("followers." + provider, true);
+                        //createFollowedUser();
+                    }
+                    adapter.notifyItemChanged(position);
+                    //salvat id-ul... la user-ul care trebuie urmarit
                 }
-                adapter.notifyItemChanged(position);
-                //salvat id-ul... la user-ul care trebuie urmarit
+
             }
-
         }
-    }
-
-
 }

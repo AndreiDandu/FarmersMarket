@@ -108,8 +108,7 @@ public class AdActivity extends AppCompatActivity {
         ad.setDescription(adDescription.getText() != null ? adDescription.getText().toString() : "");
         ad.setPrice(Integer.parseInt(!price.getText().toString().equals("") ? price.getText().toString() : "0"));
         ad.setQuantity(Integer.parseInt(!quantity.getText().toString().equals("") ? quantity.getText().toString() : "0"));
-        DateFormat ISO_8601_FORMAT = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
-        String now = ISO_8601_FORMAT.format(new Date());
+        String now = Util.getTimeStamp();
         ad.setTimestamp(now);
         if(!uriList.isEmpty()){
             ad.setUriPhoto(uriList);

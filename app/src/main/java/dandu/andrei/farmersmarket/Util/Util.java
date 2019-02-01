@@ -204,20 +204,8 @@ public class Util extends Activity{
         return storage.getReferenceFromUrl(uri);
     }
 
-    public static void getAdExpiringDate(Ad ad){
-        Date parse = null;
-        String timestamp = ad.getTimestamp();
-        DateFormat dateInstance = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
-        try {
-             parse = dateInstance.parse(timestamp);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar c = Calendar.getInstance();
-        c.setTime(parse);
-        c.add(Calendar.DATE,30);
-        Date dateNow = new Date();
-        dateNow.compareTo(c.getTime());
-        
+    public static String getTimeStamp(){
+        DateFormat ISO_8601_FORMAT = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+        return ISO_8601_FORMAT.format(new Date());
     }
 }
