@@ -1,15 +1,19 @@
 package dandu.andrei.farmersmarket.Main;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,6 +87,8 @@ public class MainActivity extends AppCompatActivity
     private SearchView searchView;
     private SharedPreferences preferences;
     private SharedPref sh;
+    private int counter;
+    private   NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +119,7 @@ public class MainActivity extends AppCompatActivity
 
         setListItems();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+         navigationView = (NavigationView) findViewById(R.id.nav_view);
         setUserInNavDrawer(navigationView, email);
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -132,8 +139,7 @@ public class MainActivity extends AppCompatActivity
                 });
         preferences = this.getPreferences(Context.MODE_PRIVATE);
         sh = new SharedPref(preferences);
-
-
+        getMessage();
     }
 
     public void setListItems() {
@@ -159,11 +165,30 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void getMessage(){
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(messageReceiver,new IntentFilter("Notification"));
+
+    }
+    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String users = intent.getStringExtra("User");
+            counter = intent.getIntExtra("Counter",0);
+            updateCounter(counter);
+        }
+    };
+//TODO error
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //unregisterReceiver(messageReceiver);
+    }
 
     protected void onClickAndLongClickItems() {
         adapter = new CustomRecycledViewAdapter(adList, this, auth.getCurrentUser().getUid(), new CustomRecycledViewAdapter.OnItemClickListener() {
             @Override
-            public void onLongClick(final Ad ad, final int pos, final View view, RelativeLayout relativeLayout) {
+            public void onLongClick(final Ad ad, final int pos, final View view, ConstraintLayout relativeLayout) {
+
                 if (ad.getUid().equals(auth.getCurrentUser().getUid())) {
                     if (actionMode == null) {
                         actionMode = startActionMode(modelCallBack);
@@ -217,11 +242,15 @@ public class MainActivity extends AppCompatActivity
                     adList.add(ad);
                 }
 
-                adapter.notifyDataSetChanged();
+
                 if (sh.showMessageOnceDay()) {
-                ExpiringAds.getExpiringAds(adList);
-                ExpiringAds.getAlertDialog(MainActivity.this);
-            }}
+                    ExpiringAds.getAlertDialog(MainActivity.this);
+
+                }
+                removeExpiredAdsFromMainList();
+
+                adapter.notifyDataSetChanged();
+            }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -229,6 +258,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+//doar pt user
+private void removeExpiredAdsFromMainList() {
+    final ArrayList<Ad> expiringAds = ExpiringAds.getExpiringAds(adList);
+    for (Ad ad : expiringAds) {
+        adList.remove(ad);
+    }
+
+}
 
     private void setUserInNavDrawer(NavigationView navigationView, String email) {
         View headerView = navigationView.getHeaderView(0);
@@ -236,13 +273,24 @@ public class MainActivity extends AppCompatActivity
         ImageView viewById1 = headerView.findViewById(R.id.profile_picture_main_activity);
         Util.getUserPicture(MainActivity.this, viewById1);
         viewById.setText(email);
-        MenuItem item = navigationView.getMenu().findItem(R.id.nav_following_ad);
-        item.setActionView(R.layout.menu_dot);
-        updateCounter(34);
+
+
     }
 
     private void updateCounter(int count) {
-        ((TextView) findViewById(R.id.tv_nav_drawer_count)).setText("23");
+
+        TextView viewById = findViewById(R.id.tv_nav_drawer_count);
+        viewById.setText(String.valueOf(count));
+        viewById.setVisibility(View.VISIBLE);
+        MenuItem item = navigationView.getMenu().findItem(R.id.nav_following_ad);
+        item.setActionView(R.layout.menu_dot);
+    }
+    public void setCounterInvisible(){
+        counter = 0;
+        TextView viewById = findViewById(R.id.tv_nav_drawer_count);
+        viewById.setVisibility(View.INVISIBLE);
+        MenuItem item = navigationView.getMenu().findItem(R.id.nav_following_ad);
+        item.setActionView(null);
     }
 
     @Override
@@ -320,8 +368,11 @@ public class MainActivity extends AppCompatActivity
             getMyAds();
         } else if (id == R.id.nav_following_ad) {
             startActivityToFollowersMain();
+            setCounterInvisible();
         } else if (id == R.id.nav_account_info) {
-            //TODO new activity cu datele uitlizatorului plus cate anunturi are puse
+            Intent intent = new Intent(MainActivity.this,UserInfoAds.class);
+            startActivity(intent);
+
         } else if (id == R.id.nav_other_ad) {
             getOthersAds();
         } else if (id == R.id.nav_share) {
@@ -357,7 +408,6 @@ public class MainActivity extends AppCompatActivity
                 }
                 adapter.notifyDataSetChanged();
                 if (sh.showMessageOnceDay()) {
-                    ExpiringAds.getExpiringAds(adList);
                     ExpiringAds.getAlertDialog(MainActivity.this);
                 }
             }
@@ -384,6 +434,7 @@ public class MainActivity extends AppCompatActivity
                         adList.add(ad);
                     }
                 }
+                removeExpiredAdsFromMainList();
                 adapter.notifyDataSetChanged();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -426,7 +477,6 @@ public class MainActivity extends AppCompatActivity
                             actionMode.finish();
                         }
                     }
-
                     break;
                 case R.id.edit:
                     if (!mapWithAdAndPos.isEmpty() && mapWithAdAndPos.size() < 2) {
@@ -466,10 +516,7 @@ public class MainActivity extends AppCompatActivity
                                Log.d(TAG,"Error on timestamp actualization");
                                 }
                             });
-
-
                         }
-
                     }
                     break;
             }
@@ -486,9 +533,7 @@ public class MainActivity extends AppCompatActivity
                 mapWithAdAndPos.clear();
                 Log.d(TAG, "Action mode destroyed");
             }
-        }
-
-        ;
+        };
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
@@ -496,9 +541,8 @@ public class MainActivity extends AppCompatActivity
                 if (direction == 4) {
                     Intent intent = new Intent(Intent.ACTION_CALL);
                     intent.setData(Uri.parse("0765524844"));
-                    startActivity(intent);
+                   // startActivity(intent);
                     adapter.notifyItemChanged(position);
-
                 }
                 if (direction == 8) {
                     Toast.makeText(this, "Follow user " + " position" + position, Toast.LENGTH_LONG).show();
@@ -506,10 +550,8 @@ public class MainActivity extends AppCompatActivity
                     String currentUser = auth.getCurrentUser().getUid();
                     if (!currentUser.equals(provider)) {
                         fireStoreDB.collection("UsersInfo").document(currentUser).update("followers." + provider, true);
-                        //createFollowedUser();
                     }
                     adapter.notifyItemChanged(position);
-                    //salvat id-ul... la user-ul care trebuie urmarit
                 }
 
             }

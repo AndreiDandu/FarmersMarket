@@ -47,17 +47,17 @@ import dandu.andrei.farmersmarket.Users.User;
 
 public class AccountInfo extends AppCompatActivity {
     @BindView(R.id.user_email_id) protected EditText inputEmail;
-    @BindView(R.id.user_email_layout_id) protected TextInputLayout inputLayoutEmail;
+
     @BindView(R.id.user_full_name_id) protected EditText inputName;
-    @BindView(R.id.user_full_name_layout_id) protected TextInputLayout inputLayoutName;
+
     @BindView(R.id.user_location_id) protected EditText inputLocation;
-    @BindView(R.id.user_location_layout_id) protected TextInputLayout inputLayoutLocation;
+
     @BindView(R.id.user_street_name_id) protected EditText inputStreetName;
-    @BindView(R.id.user_street_name_layout_id) protected TextInputLayout inputLayoutStreetName;
+
     @BindView(R.id.user_phone_number_id) protected EditText inputPhoneNumber;
-    @BindView(R.id.user_phone_number_layout_id) protected TextInputLayout inputLayoutPhoneNumber;
+
     @BindView(R.id.user_zipCode_id) protected EditText inputZipcode;
-    @BindView(R.id.user_zipCode_layout_id) protected TextInputLayout inputLayoutZipcode;
+
     @BindView(R.id.user_profile_image) protected ImageView userProfilePictureView;
 
     protected FirebaseFirestore firebaseFirestore;

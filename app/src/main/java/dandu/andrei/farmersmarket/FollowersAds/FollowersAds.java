@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -82,7 +84,7 @@ public class FollowersAds extends AppCompatActivity  {
     protected void onClickAndLongClickItems() {
         adapter = new CustomRecycledViewAdapter(adList, this, uid, new CustomRecycledViewAdapter.OnItemClickListener() {
             @Override
-            public void onLongClick(final Ad ad, final int pos, final View view, RelativeLayout relativeLayout) {
+            public void onLongClick(final Ad ad, final int pos, final View view, ConstraintLayout relativeLayout) {
 //                if (ad.getUid().equals(auth.getCurrentUser().getUid())) {
 //                    if (actionMode == null) {
 //                        actionMode = startActionMode(modelCallBack);
@@ -118,7 +120,7 @@ public class FollowersAds extends AppCompatActivity  {
         recyclerViewList.addItemDecoration(div);
         recyclerViewList.setItemAnimator(new DefaultItemAnimator());
         recyclerViewList.setAdapter(adapter);
-        //TODO de verificat ca ii de doua ori
+
         adapter.notifyDataSetChanged();
 
     }

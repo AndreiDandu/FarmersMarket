@@ -22,7 +22,7 @@ public class ExpiringAds {
     public static int getAdExpiringDate(Ad ad) {
         Date parse = null;
         Date dateNow = new Date();
-        long diff;
+        long diff = 0;
 
         boolean expiration = true;
         String timestamp = ad.getTimestamp();
@@ -34,23 +34,24 @@ public class ExpiringAds {
                 e.printStackTrace();
             }
 
-            expiration = isCloseToExpiration(dateNow, expiration);
+            expiration = isCloseToExpiration(parse, expiration);
 
             if (expiration && parse.before(dateNow)) {
                 long abs = Math.abs(dateNow.getTime() - parse.getTime());
                 diff = TimeUnit.DAYS.convert(abs, TimeUnit.MILLISECONDS);
-            } else {
+            }
+            if(expiration && diff >= 31){
                 return -1;
             }
-            if (diff == 2) {
+            if (diff == 27) {
                 //mai doua zile
                 return 2;
             }
-            if (diff == 1) {
+            if (diff == 28) {
                 // mai o zi
                 return 1;
             }
-            if (diff == 0) {
+            if (diff == 29) {
                 //expira azi
                 return 0;
             }
@@ -59,17 +60,25 @@ public class ExpiringAds {
         return 4;
     }
 
-    private static boolean isCloseToExpiration(Date dateNow, boolean expiration) {
+    private static boolean isCloseToExpiration(Date parse, boolean expiration) {
         long diff;
         Calendar c = Calendar.getInstance();
         Calendar c1 = Calendar.getInstance();
+        c.setTime(parse);
         c.add(Calendar.DATE, 30);
-        c1.setTime(dateNow);
-        Date time = c.getTime();
-        Date time2 = c1.getTime();
 
-        if (time.after(time2)) {
-            long abs = Math.abs(time.getTime() - time2.getTime());
+        Date time = c.getTime();
+        Date dateNow = c1.getTime();
+
+        if (dateNow.after(time)) {
+            long abs = Math.abs(time.getTime() - dateNow.getTime());
+            diff = TimeUnit.DAYS.convert(abs, TimeUnit.MILLISECONDS);
+            if (diff > 3) {
+                expiration = false;
+            }
+        }
+        if(dateNow.before(time)){
+            long abs = Math.abs(time.getTime() - dateNow.getTime());
             diff = TimeUnit.DAYS.convert(abs, TimeUnit.MILLISECONDS);
             if (diff > 3) {
                 expiration = false;
@@ -79,13 +88,17 @@ public class ExpiringAds {
     }
 
     //first to call doar cele expirate ca sa fie dat remove din view
-    public static void getExpiringAds(ArrayList<Ad> adList) {
+    public static ArrayList<Ad> getExpiringAds(ArrayList<Ad> adList) {
+        adsExpired.clear();
         for (Ad ad : adList) {
-            int days = getAdExpiringDate(ad);
-            if (days == -1) {
-                adsExpired.add(ad);
+
+                int days = getAdExpiringDate(ad);
+                if (days == -1) {
+                    adsExpired.add(ad);
+                }
             }
-        }
+
+        return adsExpired;
     }
 
     public static void getAlertDialog(Context context) {

@@ -74,7 +74,7 @@ public class FollowersAdapter extends RecyclerView.Adapter<FollowersAdapter.MyVi
         holder.txtFollowerLocation.setPaintFlags(holder.txtFollowerLocation.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         holder.txtFollowerLocation.setText(user.getLocation());
         holder.txtFollowerName.setText("Nume: "+ user.getFullName());
-        holder.getTxtFollowerPhone.setText("Telefon " + user.getPhoneNumber());
+        holder.getTxtFollowerPhone.setText("Telefon " + user.getPhoneNumber() != null ? user.getPhoneNumber():"Fara numar");
         holder.txtFollowerLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +82,7 @@ public class FollowersAdapter extends RecyclerView.Adapter<FollowersAdapter.MyVi
                 Toast.makeText(context, "Clicked on Location", Toast.LENGTH_LONG).show();
             }
         });
-        //TODO check tag problem
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -70,7 +72,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String description = remoteMessage.getData().get("description");
             String usr = remoteMessage.getData().get("user");
             String title = remoteMessage.getData().get("title");
-            sendNotification1(title, description, usr);
+            sendNotification(title, description, usr);
+            sentMessageToMainActivity(usr);
         }
 
         // Check if message contains a notification payload.
@@ -78,6 +81,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
     }
+    private void sentMessageToMainActivity( String user){
+        Intent intent =  new Intent("Notification");
+        intent.putExtra("User",user);
+        intent.putExtra("Counter",count);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+    }
+
 
     //This method is only generating push notification
     private void sendNotification(String messageTitle, String messageBody, String user) {
