@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,6 +35,7 @@ public class LoginStartScreen extends Activity {
         ButterKnife.bind(LoginStartScreen.this);
         firebaseAuth = FirebaseAuth.getInstance();
         constraintLayout = findViewById(R.id.constraint_layout_id);
+        checkIfUserAlreadyLoggedIn();
     }
     @OnClick(R.id.sign_in_with_email_btn)
     public void onClickEmailButton(){
@@ -74,6 +76,11 @@ public class LoginStartScreen extends Activity {
                 }
             });
             make.show();
+        }
+    }
+    private void checkIfUserAlreadyLoggedIn(){
+        if(firebaseAuth.getCurrentUser() != null ){
+            startActivity(new Intent(LoginStartScreen.this, MainActivity.class));
         }
     }
 

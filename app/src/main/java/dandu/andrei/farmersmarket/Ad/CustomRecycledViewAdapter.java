@@ -2,8 +2,10 @@ package dandu.andrei.farmersmarket.Ad;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +40,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     private List<Ad> filterAds;
 
     public interface OnItemClickListener {
-        void onLongClick(Ad ad, int v, View view,RelativeLayout foreground);
+        void onLongClick(Ad ad, int v, View view,ConstraintLayout foreground);
         void onClickListener(Ad ad, int v, View view);
     }
 
@@ -55,7 +58,8 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
         @BindView(R.id.expiration_field_id)
         TextView expiration;
 
-       public  RelativeLayout background,foreground;
+       public  RelativeLayout background;
+       public ConstraintLayout foreground;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -66,7 +70,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
         }
 
-        public void bind(final Ad ad, final OnItemClickListener listener, final int pos, final View view, final RelativeLayout foreground) {
+        public void bind(final Ad ad, final OnItemClickListener listener, final int pos, final View view, final ConstraintLayout foreground) {
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -97,7 +101,7 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View inflate = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_row_test, parent, false);
+                .inflate(R.layout.list_row_constraint, parent, false);
 
         return new MyViewHolder(inflate);
     }
@@ -113,8 +117,9 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
             StorageReference url = Util.getUrl(uriPhoto.get(0));
 
             Glide.with(context).load(url).into(holder.imageView);
-        }else {
-            holder.imageView.setVisibility(View.GONE);
+        }
+        else {
+           Glide.with(context).load(R.drawable.no_photo_available).into(holder.imageView);
         }
         String price = context.getResources().getString(R.string.price_text, String.valueOf(ad.getPrice()));
 
@@ -135,17 +140,21 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
             }
         });
     }
-
+    //TODO move to util
     private void setExpiration(@NonNull MyViewHolder holder, Ad ad) {
         int i = setExp(ad);
-        if(i != -1) {
+        if(i != -1 && i != 4) {
             if (i == 0) {
                 holder.expiration.setText("Anuntul expira astazi");
             } else {
                 holder.expiration.setText("Anuntul expira in " + i + " zile");
             }
-        }else{
-            holder.expiration.setVisibility(View.GONE);
+        }
+        if(i == -1){
+            holder.expiration.setText("Anuntul este expirat");
+        }
+        if(i == 4){
+            holder.expiration.setText("  ");
         }
     }
 
@@ -168,18 +177,10 @@ public class CustomRecycledViewAdapter extends RecyclerView.Adapter<CustomRecycl
     }
 
     public int setExp(Ad ad) {
+        int adExpiringDate = 4;
         if (ad.getUid().equals(uid)) {
-            int adExpiringDate = ExpiringAds.getAdExpiringDate(ad);
-            if (adExpiringDate == 2) {
-                return 2;
-            }
-            if (adExpiringDate == 1) {
-                return 1;
-            }
-            if (adExpiringDate == 0) {
-                return 0;
-            }
+             adExpiringDate = ExpiringAds.getAdExpiringDate(ad);
         }
-        return -1;
+        return adExpiringDate;
     }
 }

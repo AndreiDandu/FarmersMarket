@@ -10,11 +10,14 @@
     -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -26,12 +29,14 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".Main.MainActivity"
+            android:configChanges="orientation"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-            </activity>
+        </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -46,61 +51,97 @@
 
         <activity
             android:name=".LoginWithProviders.SignedIn"
-            android:label="@string/SignIn"/>
+            android:configChanges="orientation"
+            android:label="@string/SignIn"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".Main.MapsActivity"
-            android:label="@string/title_activity_maps2">
-        </activity>
+            android:configChanges="orientation"
+            android:label="@string/title_activity_maps2"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".HandleLogin.LoginWithPasswordAndEmail"
-            android:label="Login">
-        </activity>
+            android:configChanges="orientation"
+            android:label="Login"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".Main.LoginStartScreen"
+            android:configChanges="orientation"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HandleLogin.CheckEmailInDataBase" />
-        <activity android:name=".HandleLogin.SignInWithUserInfo" />
+        <activity
+            android:name=".HandleLogin.CheckEmailInDataBase"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HandleLogin.SignInWithUserInfo"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
         <activity android:name=".Main.UploadPicture" />
-        <activity android:name=".Ad.AdActivity" />
-        <activity android:name=".Main.AdViewActivity"
-                  android:windowSoftInputMode="stateHidden"
-            />
+        <activity
+            android:name=".Ad.AdActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Main.AdViewActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Main.AccountInfo" />
-        <meta-data
-            tools:replace="android:value"
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
 
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:value="@string/facebook_app_id"
+            tools:replace="android:value" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginWithProviders.FacebookLogin" />
-        <activity android:name=".FollowersAds.FollowersMain" />
-        <activity android:name=".FollowersAds.FollowersAds" />
-        <activity android:name=".Ad.AdSimpleView"
-            android:windowSoftInputMode="stateHidden"/>
-        <service
-            android:name=".Util.MyFirebaseMessagingService">
+        <activity
+            android:name=".LoginWithProviders.FacebookLogin"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FollowersAds.FollowersMain"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FollowersAds.FollowersAds"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Ad.AdSimpleView"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".Main.UserInfoAds"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".Util.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
