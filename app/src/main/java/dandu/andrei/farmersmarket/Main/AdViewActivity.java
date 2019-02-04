@@ -74,7 +74,7 @@ public class AdViewActivity extends Activity {
             title.setText(ad.getTitle());
             adDescription.setText(ad.getDescription());
             quantity.setText(String.valueOf(ad.getQuantity()));
-            price.setText(String.valueOf(ad.getPrice()));
+            price.setText(ad.getPrice());
             ArrayList<String> uriPhotos = ad.getUriPhoto();
             for (String uriPhoto : uriPhotos) {
                 AdBitmapImage img = new AdBitmapImage(uriPhoto);
@@ -116,7 +116,7 @@ public class AdViewActivity extends Activity {
 
                             docRef.update("description", adDescription.getText().toString());
                             docRef.update("price", Integer.parseInt(price.getText().toString()));
-                            docRef.update("quantity", Integer.parseInt(quantity.getText().toString()));
+                            docRef.update("quantity", quantity.getText().toString());
                             docRef.update("title", title.getText().toString());
 
                             Toast.makeText(AdViewActivity.this,"Ad updated",Toast.LENGTH_LONG).show();

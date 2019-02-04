@@ -102,13 +102,12 @@ public class AdActivity extends AppCompatActivity {
         ad.setDescription(adDescription.getText() != null ? adDescription.getText().toString() : "");
         ad.setPrice(Integer.parseInt(!price.getText().toString().equals("") ? price.getText().toString() : "0"));
         //TODO CHANGE TO STRING
-        ad.setQuantity(Integer.parseInt(!quantity.getText().toString().equals("") ? quantity.getText().toString() : "0"));
+        ad.setQuantity(!quantity.getText().toString().equals("") ? quantity.getText().toString() : "0");
         String now = Util.getTimeStamp();
         ad.setTimestamp(now);
         if(!uriList.isEmpty()){
             ad.setUriPhoto(uriList);
         }
-
         ad.setLocation(location);
         Intent i = new Intent(this,MainActivity.class);
         i.putExtra("Ad", ad);

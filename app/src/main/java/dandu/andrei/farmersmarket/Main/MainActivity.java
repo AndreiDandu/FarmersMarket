@@ -372,7 +372,6 @@ private void removeExpiredAdsFromMainList() {
         } else if (id == R.id.nav_account_info) {
             Intent intent = new Intent(MainActivity.this,UserInfoAds.class);
             startActivity(intent);
-
         } else if (id == R.id.nav_other_ad) {
             getOthersAds();
         } else if (id == R.id.nav_share) {
@@ -488,36 +487,7 @@ private void removeExpiredAdsFromMainList() {
                     }
                     break;
                 case R.id.reactualizare:
-                    if (!mapWithAdAndPos.isEmpty() && mapWithAdAndPos.size() < 2) {
-                        for (Map.Entry<Ad, Integer> adAndPosition : mapWithAdAndPos.entrySet()) {
-                            final Ad key = adAndPosition.getKey();
-                            CollectionReference ads = fireStoreDB.collection("Ads");
-                            ads.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            Ad adFromFireStore = document.toObject(Ad.class);
-                                            if (adFromFireStore.getTitle().equals(key.getTitle())) {
-                                                DocumentReference docRef = fireStoreDB.collection("Ads").document(document.getId());
-
-                                                docRef.update("timestamp",Util.getTimeStamp());
-
-                                            }
-                                        }
-                                    }
-                                    if(actionMode != null){
-                                        actionMode.finish();
-                                    }
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                               Log.d(TAG,"Error on timestamp actualization");
-                                }
-                            });
-                        }
-                    }
+                    updateAdTimeStamp();
                     break;
             }
             return false;
@@ -535,7 +505,40 @@ private void removeExpiredAdsFromMainList() {
             }
         };
 
-        @Override
+    private void updateAdTimeStamp() {
+        if (!mapWithAdAndPos.isEmpty() && mapWithAdAndPos.size() < 2) {
+            for (Map.Entry<Ad, Integer> adAndPosition : mapWithAdAndPos.entrySet()) {
+                final Ad key = adAndPosition.getKey();
+                CollectionReference ads = fireStoreDB.collection("Ads");
+                ads.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Ad adFromFireStore = document.toObject(Ad.class);
+                                if (adFromFireStore.getTitle().equals(key.getTitle())) {
+                                    DocumentReference docRef = fireStoreDB.collection("Ads").document(document.getId());
+
+                                    docRef.update("timestamp",Util.getTimeStamp());
+
+                                }
+                            }
+                        }
+                        if(actionMode != null){
+                            actionMode.finish();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                   Log.d(TAG,"Error on timestamp actualization");
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
             if (viewHolder instanceof CustomRecycledViewAdapter.MyViewHolder) {
                 if (direction == 4) {

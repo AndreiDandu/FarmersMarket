@@ -49,7 +49,7 @@ public class AdSimpleView extends AppCompatActivity {
             title.setText(dataFromMainActivity.getTitle());
             adDescription.setText(dataFromMainActivity.getDescription());
             quantity.setText(String.valueOf(dataFromMainActivity.getQuantity()));
-            price.setText(String.valueOf(dataFromMainActivity.getPrice()));
+            price.setText(dataFromMainActivity.getPrice());
             date.setText("Adaugat in data de: \n" + dataFromMainActivity.getTimestamp());
             ArrayList<String> uriPhotos = dataFromMainActivity.getUriPhoto();
             for (String uriPhoto : uriPhotos) {

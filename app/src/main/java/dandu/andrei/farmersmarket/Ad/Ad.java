@@ -13,7 +13,7 @@ public class Ad implements Parcelable {
     private String title;
     private String description;
     private int price;
-    private int quantity;
+    private String quantity;
     private boolean isSelected;
     private ArrayList<String> uriPhoto =  new ArrayList<>();
     private String location;
@@ -21,7 +21,7 @@ public class Ad implements Parcelable {
 
     public Ad(){}
 
-    public Ad(String title, String description, int price, int quantity) {
+    public Ad(String title, String description, int price, String quantity) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -70,7 +70,7 @@ public class Ad implements Parcelable {
         return price;
     }
 
-    public int getQuantity() {
+    public String getQuantity() {
         return quantity;
     }
 
@@ -82,7 +82,7 @@ public class Ad implements Parcelable {
         this.price = price;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
 
@@ -115,7 +115,7 @@ public class Ad implements Parcelable {
         uid = in.readString();
         title = in.readString();
         description = in.readString();
-        quantity = in.readInt();
+        quantity = in.readString();
         price =in.readInt();
         location = in.readString();
         timestamp=in.readString();
@@ -128,7 +128,7 @@ public class Ad implements Parcelable {
         dest.writeString(uid);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeInt(quantity);
+        dest.writeString(quantity);
         dest.writeInt(price);
         dest.writeString(location);
         dest.writeString(timestamp);
