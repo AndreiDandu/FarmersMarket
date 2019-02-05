@@ -69,22 +69,21 @@ public class Util extends Activity{
         });
     }
     public static void getUserPicture(final Context context,final ImageView img) {
-
-       DocumentReference userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
+       final Uri photoUrlFromProvider = auth.getCurrentUser().getPhotoUrl();
+       if(photoUrlFromProvider != null) {
+           Glide.with(context).load(photoUrlFromProvider).into(img);
+       }
+        DocumentReference userInfo = fireStoreDB.collection("UsersInfo").document(auth.getCurrentUser().getUid());
         userInfo.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot){
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     User user = documentSnapshot.toObject(User.class);
                      String profileUriPicture = user.getUriPhoto();
-                     if(profileUriPicture == null){
-                       Uri photoUrl = getUserPictureFromProvider();
-                       if(photoUrl != null){
-                           profileUriPicture = photoUrl.toString();
-                       }
+
+                     if(profileUriPicture == null && photoUrlFromProvider != null){
+                         profileUriPicture = photoUrlFromProvider.toString();
                      }
-                     
-                    //ImageView viewById1 = (ImageView) findViewById(R.id.profile_picture_main_activity);
                     Glide.with(context).load(profileUriPicture).into(img);
                 }
             }
@@ -94,11 +93,6 @@ public class Util extends Activity{
                 Toast.makeText(context, "Fail to get User info " , Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private static Uri getUserPictureFromProvider() {
-     return  auth.getCurrentUser().getPhotoUrl();
-
     }
 
     public static LiveData<String> getUserLocation() {
@@ -184,13 +178,15 @@ public class Util extends Activity{
             }
         });
     }
+
+    //salvarea anuntului in baza de date
     public static void addAd(final Ad ad) {
         final String uid = auth.getCurrentUser().getUid();
         ad.setUid(uid);
         fireStoreDB.collection("Ads").add(ad).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-              Log.d(TAG, "AD save with succes in DB");
+              Log.d(TAG, "AD save with success in DB");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -199,6 +195,7 @@ public class Util extends Activity{
             }
         });
     }
+
     //Get uri for glide to load
     public static StorageReference getUrl(String uri){
         return storage.getReferenceFromUrl(uri);
