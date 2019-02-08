@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ import butterknife.OnClick;
 import dandu.andrei.farmersmarket.Main.MainActivity;
 import dandu.andrei.farmersmarket.R;
 import dandu.andrei.farmersmarket.Users.User;
+import dandu.andrei.farmersmarket.Util.Util;
 import dandu.andrei.farmersmarket.Validators.EmailValidator;
 import dandu.andrei.farmersmarket.Validators.PasswordValidator;
 
@@ -61,15 +64,16 @@ public class SignInWithUserInfo extends Activity {
         inputPassword.addTextChangedListener(new PasswordValidator(inputPassword,inputLayoutPassword));
         //TODO: check again for email
     }
+
+    //informatiile utilizatorului
     public User getUser(){
         int zipcode= Integer.parseInt(inputZipcode.getText().toString());
-        //TODO make string from phonenumber
-        String phoneNumber = inputPhoneNumber.getText().toString();
-        String email = inputEmail.getText().toString();
-        String password = inputPassword.getText().toString();
-        String fullName = inputName.getText().toString();
-        String streetName = inputStreetName.getText().toString();
-        String location = inputLocation.getText().toString();
+        String phoneNumber = !inputPhoneNumber.getText().toString().equals("") ? inputPhoneNumber.getText().toString() : "Fara numar de telefon";
+        String email = !inputEmail.getText().toString().equals("") ? inputEmail.getText().toString() : "Fara email";
+        String password = !inputPassword.getText().toString().equals("") ? inputPassword.getText().toString() : "";
+        String fullName = !inputName.getText().toString().equals("")? inputName.getText().toString() : "Fara nume";
+        String streetName = !inputStreetName.getText().toString().equals("") ? inputStreetName.getText().toString() : "Fara strada";
+        String location = !inputLocation.getText().toString().equals("") ? inputLocation.getText().toString() : "Fara locatie";
 
         User user = new User(fullName,email,password,zipcode,phoneNumber,streetName,location);
 
@@ -95,9 +99,9 @@ public class SignInWithUserInfo extends Activity {
 
     @OnClick(R.id.btn_signup)
     protected void createUser() {
-            String email = inputEmail.getText().toString();
-            String password = inputPassword.getText().toString();
-
+        String email = inputEmail.getText().toString();
+        String password = inputPassword.getText().toString();
+        if (Util.isValidEmail(email)) {
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -106,13 +110,16 @@ public class SignInWithUserInfo extends Activity {
                         Toast.makeText(SignInWithUserInfo.this, "User created with succes", Toast.LENGTH_LONG).show();
                         //make intent for MainActivity and send user and email
                         addUser();
-                        startActivity(new Intent(SignInWithUserInfo.this,MainActivity.class));
+                        startActivity(new Intent(SignInWithUserInfo.this, MainActivity.class));
 
                     } else {
                         Toast.makeText(SignInWithUserInfo.this, "User creation failed", Toast.LENGTH_LONG).show();
                     }
                 }
             });
+        }
 
     }
+
+
 }

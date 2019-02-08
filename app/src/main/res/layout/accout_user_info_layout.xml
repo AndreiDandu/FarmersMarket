@@ -71,6 +71,7 @@
             android:id="@+id/user_zipCode_id"
             android:layout_width="155dp"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="ZipCode" />
     </android.support.design.widget.TextInputLayout>
 

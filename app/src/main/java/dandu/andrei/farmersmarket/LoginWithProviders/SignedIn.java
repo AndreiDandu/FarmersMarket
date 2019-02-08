@@ -30,23 +30,23 @@ import dandu.andrei.farmersmarket.R;
 
 public class SignedIn extends AppCompatActivity {
 
-   private static final int RC_SIGN_IN = 12;
-   private GoogleApiClient mGoogleSignInClient;
-   private FirebaseAuth mAuth;
-   private FirebaseAuth.AuthStateListener mAuthStateListener;
-   private static final String TAG="SignIn";
+    private static final int RC_SIGN_IN = 12;
+    private GoogleApiClient mGoogleSignInClient;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private static final String TAG = "SignIn";
 
 
     @Override
-        protected void onCreate(@Nullable Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.login_start_screen);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.login_start_screen);
         mAuth = FirebaseAuth.getInstance();
-        mAuthStateListener= new FirebaseAuth.AuthStateListener() {
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() != null){
-                    startActivity(new Intent(SignedIn.this,MainActivity.class));
+                if (firebaseAuth.getCurrentUser() != null) {
+                    startActivity(new Intent(SignedIn.this, MainActivity.class));
                 }
             }
         };
@@ -58,23 +58,23 @@ public class SignedIn extends AppCompatActivity {
         mGoogleSignInClient = new GoogleApiClient.Builder(getApplicationContext()).enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
             @Override
             public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                Toast.makeText(SignedIn.this,"error",Toast.LENGTH_LONG).show();
+                Toast.makeText(SignedIn.this, "error", Toast.LENGTH_LONG).show();
             }
         })
-                .addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
 
         Button mGoogleButton = (Button) findViewById(R.id.sign_in_with_google_btn);
         mGoogleButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-               signIn();
+                signIn();
             }
         });
 
     }
 
-     private void signIn() {
+    private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleSignInClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -99,30 +99,31 @@ public class SignedIn extends AppCompatActivity {
     }
 
 
-        private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-            Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
-            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-            mAuth.signInWithCredential(credential)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d(TAG, "signInWithCredential:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                updateUI(user);
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w(TAG, "signInWithCredential:failure", task.getException());
-                                Toast.makeText(SignedIn.this,"auth failed",Toast.LENGTH_LONG).show();
-                                updateUI(null);
-                            }
-
-                            // ...
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            //TODO create user in DB with google info
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(SignedIn.this, "auth failed", Toast.LENGTH_LONG).show();
+                            updateUI(null);
                         }
-                    });
-        }
+
+                        // ...
+                    }
+                });
+    }
 
     @Override
     protected void onStart() {

@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,10 +30,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import dandu.andrei.farmersmarket.Ad.Ad;
@@ -204,5 +203,9 @@ public class Util extends Activity{
     public static String getTimeStamp(){
         DateFormat ISO_8601_FORMAT = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
         return ISO_8601_FORMAT.format(new Date());
+    }
+
+    public static boolean isValidEmail(String email){
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }

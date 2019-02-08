@@ -59,10 +59,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static void sendRegistrationToServer(String token) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        firebaseFirestore.collection("UsersInfo")
-                .document(firebaseAuth.getCurrentUser().getUid()).update("token", token);
+        if (firebaseAuth != null && firebaseAuth.getCurrentUser() != null) {
+            firebaseFirestore.collection("UsersInfo")
+                    .document(firebaseAuth.getCurrentUser().getUid()).update("token", token);
+        }
     }
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 

@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dandu.andrei.farmersmarket.R;
+import dandu.andrei.farmersmarket.Util.Util;
 import dandu.andrei.farmersmarket.Validators.EmailValidator;
 
 public class CheckEmailInDataBase extends Activity {
@@ -40,8 +41,9 @@ public class CheckEmailInDataBase extends Activity {
 
     @OnClick(R.id.next_button)
     public void onClickNextButton() {
-    if(!email_field.getText().equals("")) {
         final String email = email_field.getText().toString();
+    if(!email.equals("") && Util.isValidEmail(email)) {
+
         firebaseAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(this, new OnCompleteListener<SignInMethodQueryResult>() {
             @Override
             public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
