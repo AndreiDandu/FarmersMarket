@@ -21,6 +21,7 @@
                 android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:hint="@string/hint_password"
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>

@@ -74,7 +74,7 @@ public class ExpiringAds {
             long abs = Math.abs(time.getTime() - dateNow.getTime());
             diff = TimeUnit.DAYS.convert(abs, TimeUnit.MILLISECONDS);
             if (diff > 3) {
-                expiration = false;
+                expiration = true;
             }
         }
         if(dateNow.before(time)){

@@ -30,35 +30,11 @@
             android:layout_marginRight="10dp"
             android:paddingStart="4dp"
             android:src="@drawable/ic_person_add_black_24dp" />
-
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignStart="@+id/follow_icon"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginLeft="59dp"-->
-            <!--android:layout_marginRight="145dp"-->
-            <!--android:layout_toLeftOf="@id/delete_icon"-->
-            <!--android:text="Follow"-->
-            <!--android:textColor="#fff"-->
-            <!--android:textSize="13dp" />-->
-
-
     </RelativeLayout>
-    <!-- Thumbnail AdBitmapImage -->
-    <!--<ImageView-->
-        <!--android:id="@+id/thumbnail"-->
-        <!--android:layout_width="80sp"-->
-        <!--android:layout_height="80sp"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--tools:src="@drawable/farmer_market_image"/>-->
-
-
     <RelativeLayout
         android:id="@+id/view_foreground"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="85dp"
         android:layout_alignParentTop="true"
         android:background="@android:color/white"
         android:orientation="horizontal">

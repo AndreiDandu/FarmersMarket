@@ -208,4 +208,22 @@ public class Util extends Activity{
     public static boolean isValidEmail(String email){
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+
+    public static void deletePictures(String uri) {
+        if (uri != null) {
+            StorageReference referenceFromUrl = storage.getReferenceFromUrl(uri);
+            referenceFromUrl.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "Photo's deleted");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "Fail on photo delete");
+                }
+            });
+        }
+
+    }
 }

@@ -19,11 +19,15 @@ import dandu.andrei.farmersmarket.Util.Util;
 public class AdPicsAdapter extends RecyclerView.Adapter<AdPicsAdapter.MyViewHolder> {
     private List<AdBitmapImage> adBitmapList;
     private Context context;
+    private final OnItemClickListener listener;
+    public interface OnItemClickListener {
+        void onClickListener(AdBitmapImage ad, int v, View view);
+    }
 
-
-    public AdPicsAdapter(List<AdBitmapImage> bitmapList,Context context){
+    public AdPicsAdapter(List<AdBitmapImage> bitmapList,Context context, OnItemClickListener listener){
         this.adBitmapList = bitmapList;
         this.context = context;
+        this.listener = listener;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
@@ -31,6 +35,15 @@ public class AdPicsAdapter extends RecyclerView.Adapter<AdPicsAdapter.MyViewHold
         public MyViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.ad_bitmap_view_id);
+        }
+        public void bind(final AdBitmapImage bitmapImage, final OnItemClickListener listener, final int pos, final View view) {
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onClickListener(bitmapImage,pos,view);
+                }
+            });
         }
     }
 
@@ -43,8 +56,9 @@ public class AdPicsAdapter extends RecyclerView.Adapter<AdPicsAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         AdBitmapImage adBitmapImage = adBitmapList.get(position);
+        holder.bind(adBitmapImage, listener, position, holder.itemView);
         if(adBitmapImage.getBitmap() != null) {
             Glide.with(context).load(adBitmapImage.getBitmap()).into(holder.imageView);
         }else if(adBitmapImage.getStringUri() != null){
@@ -58,7 +72,11 @@ public class AdPicsAdapter extends RecyclerView.Adapter<AdPicsAdapter.MyViewHold
         return adBitmapList.size();
     }
 
-
+    public void delete(int pos) {
+        adBitmapList.remove(pos);
+        notifyItemRemoved(pos);
+        notifyItemRangeChanged(pos,adBitmapList.size());
+    }
 
 
 }

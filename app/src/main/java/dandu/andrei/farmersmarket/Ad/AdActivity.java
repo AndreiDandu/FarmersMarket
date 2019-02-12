@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -84,7 +85,12 @@ public class AdActivity extends AppCompatActivity {
 
     public void setAdapter(){
         RecyclerView recyclerView = findViewById(R.id.ad_activity_recyclerView_id);
-        adapter = new AdPicsAdapter(bitmapList,getApplicationContext());
+        adapter = new AdPicsAdapter(bitmapList, getApplicationContext(), new AdPicsAdapter.OnItemClickListener() {
+            @Override
+            public void onClickListener(AdBitmapImage ad, int v, View view) {
+    //do nothing
+            }
+        });
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         BitmapOffsetDecoration itemDecoration = new BitmapOffsetDecoration(getApplication().getBaseContext(),R.dimen.picture_offset);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);

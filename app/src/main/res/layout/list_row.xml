@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -7,27 +7,53 @@
     android:clickable="true">
 
     <!-- Thumbnail AdBitmapImage -->
-    <ImageView
-        android:id="@+id/thumbnail"
-        android:layout_width="80sp"
-        android:layout_height="80sp"
-        android:layout_alignParentLeft="true"
-        tools:src="@drawable/farmer_market_image2"/>
 
+    <RelativeLayout
+        android:id="@+id/view_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark">
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:paddingEnd="4dp"
+            android:src="@drawable/fui_ic_phone_white_24dp" />
+
+        <ImageView
+            android:id="@+id/follow_icon"
+            android:layout_width="53dp"
+            android:layout_height="46dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:paddingStart="4dp"
+            android:src="@drawable/ic_person_add_black_24dp" />
+    </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/view_foreground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_margin="8sp"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingLeft="80sp"
+        android:background="@android:color/white"
         android:weightSum="100">
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:layout_weight="2"
+            tools:src="@drawable/farmer_market_image2"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
+            android:layout_weight="35"
             android:orientation="vertical">
 
             <TextView
@@ -48,16 +74,20 @@
                 android:textColor="@color/secondaryText"
                 android:textSize="@dimen/rating"
                 tools:text="Lorem ipsum dolor sic amet Lorem ipsum dolor sic amet" />
-
+            <TextView
+                android:id="@+id/expiration_field_id"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red"
+                android:text=""/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="75"
+            android:layout_weight="65"
             android:gravity="end"
             android:orientation="vertical">
-
 
             <!-- Price -->
             <TextView
@@ -74,29 +104,22 @@
                 android:text="lei"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 tools:text="lei" />
+            <TextView
+                android:id="@+id/input_location_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="5sp"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_location16dp"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/genre"
+                android:paddingBottom="4sp"
+                android:paddingRight="4sp"
+                tools:text="Buzias" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/input_location_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="5sp"
-        android:clickable="true"
-        android:drawableLeft="@drawable/ic_location16dp"
-        android:textColor="@color/textColor"
-        android:textSize="@dimen/genre"
-        android:paddingBottom="4sp"
-        android:paddingRight="4sp"
-        tools:text="Buzias" />
-
-    <!-- Title of ad -->
-
-    <!-- Location -->
-
-
-</RelativeLayout>
+</FrameLayout>

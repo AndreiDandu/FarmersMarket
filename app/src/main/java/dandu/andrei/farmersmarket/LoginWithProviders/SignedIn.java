@@ -111,7 +111,7 @@ public class SignedIn extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            //TODO create user in DB with google info
+                            //TODO create user in DB with google info user.getUid()then check exactly path in firebase if no move to sign in with user
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.

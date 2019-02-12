@@ -31,7 +31,7 @@ public class ExampleInstrumentedTest {
         assertEquals("dandu.andrei.farmersmarket", appContext.getPackageName());
     }
     @Rule
-    public ActivityTestRule<MainActivity> mya = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> myactivity = new ActivityTestRule<>(MainActivity.class);
 
     @Test
     public void clickSkipToMain(){
